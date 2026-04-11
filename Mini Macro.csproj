@@ -17,4 +17,9 @@
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- logo.ico как встроенный ресурс: нужен для Window.Icon и ApplicationIcon -->
+    <Resource Include="logo.ico"/>
+  </ItemGroup>
+
 </Project>
