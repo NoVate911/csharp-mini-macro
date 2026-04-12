@@ -17,6 +17,14 @@
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <!-- Исключить подпроект Installer из glob-паттернов главного проекта -->
+  <ItemGroup>
+    <Compile Remove="Installer\**"/>
+    <Page    Remove="Installer\**"/>
+    <None    Remove="Installer\**"/>
+    <EmbeddedResource Remove="Installer\**"/>
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)'=='net48'">
     <DefineConstants>LEGACY</DefineConstants>
     <LangVersion>latest</LangVersion>
