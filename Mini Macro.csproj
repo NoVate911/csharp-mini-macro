@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFrameworks>net10.0-windows;net48</TargetFrameworks>
     <RootNamespace>MiniMacro</RootNamespace>
     <AssemblyName>MiniMacro</AssemblyName>
     <AssemblyTitle>Mini Macro</AssemblyTitle>
@@ -15,6 +15,11 @@
     <Description>Лёгкая программа для записи и воспроизведения макросов клавиатуры и мыши.</Description>
     <Version>0.1.0</Version>
     <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net48'">
+    <DefineConstants>LEGACY</DefineConstants>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

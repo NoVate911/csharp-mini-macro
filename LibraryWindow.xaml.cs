@@ -7,8 +7,8 @@ namespace MiniMacro
     public partial class LibraryWindow : Window
     {
         // Полный список тестовых макросов: (название, горячая клавиша)
-        private readonly List<(string Name, string Hotkey)> _allMacros =
-        [
+        private readonly List<(string Name, string Hotkey)> _allMacros = new List<(string, string)>
+        {
             ("Приветственное сообщение", "Ctrl+F1"),
             ("Авторизация",              ""),
             ("Шаблон письма",            "Alt+E"),
@@ -21,12 +21,11 @@ namespace MiniMacro
             ("Очистка временных файлов", "Ctrl+Shift+D"),
             ("Переключение VPN",         ""),
             ("Ежемесячный отчёт",        "Ctrl+M"),
-        ];
+        };
 
         public LibraryWindow()
         {
             InitializeComponent();
-            // Заполнить список при открытии окна
             ApplyFilter(string.Empty);
         }
 
@@ -37,8 +36,7 @@ namespace MiniMacro
 
             var results = string.IsNullOrWhiteSpace(query)
                 ? _allMacros
-                : _allMacros.Where(m =>
-                    m.Name.Contains(query, StringComparison.OrdinalIgnoreCase));
+                : _allMacros.Where(m => ContainsIgnoreCase(m.Name, query));
 
             foreach (var (name, hotkey) in results)
             {
@@ -51,16 +49,20 @@ namespace MiniMacro
 
             int count = MacroList.Children.Count;
 
-            // Показать пустое состояние если ничего не найдено
             EmptyState.Visibility = count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-            // Обновить счётчик в футере
-            CountText.Text = count switch
-            {
-                0 => "Нет макросов",
-                1 => "1 макрос",
-                _ => $"{count} макросов"
-            };
+            CountText.Text = count == 0 ? "Нет макросов"
+                           : count == 1 ? "1 макрос"
+                           : $"{count} макросов";
+        }
+
+        private static bool ContainsIgnoreCase(string source, string value)
+        {
+#if LEGACY
+            return source.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
+#else
+            return source.Contains(value, StringComparison.OrdinalIgnoreCase);
+#endif
         }
 
         private void Search_TextChanged(object sender, TextChangedEventArgs e)

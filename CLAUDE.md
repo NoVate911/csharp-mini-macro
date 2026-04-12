@@ -4,8 +4,22 @@
 
 **Название:** Mini Macro  
 **Автор:** NoVate Source  
-**Стек:** C# (.NET 10.0), WPF, Visual Studio Community 2026  
+**Стек:** C# (.NET 10.0 / .NET Framework 4.8), WPF, Visual Studio Community 2026  
 **Формат файлов макросов:** `.mmacro` (собственный формат)
+
+---
+
+## Версии
+
+| Версия  | Платформа              | ОС             |
+|---------|------------------------|----------------|
+| Modern  | .NET 10.0              | Windows 10/11  |
+| Legacy  | .NET Framework 4.8     | Windows 7 SP1+ |
+
+- Мультитаргетинг в одном `.csproj`: `<TargetFrameworks>net10.0-windows;net48</TargetFrameworks>`
+- Символ условной компиляции для Legacy: `LEGACY`
+- API-различия изолируются через `#if LEGACY ... #endif`
+- Сборка конкретной версии: `dotnet build -f net10.0-windows` / `dotnet build -f net48`
 
 ---
 
