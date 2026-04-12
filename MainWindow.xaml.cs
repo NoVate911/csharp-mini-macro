@@ -33,6 +33,11 @@ namespace MiniMacro
             new LibraryWindow().Show();
         }
 
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            new SettingsWindow().Show();
+        }
+
         // Открытие репозитория в браузере по умолчанию
         private void GitHub_Click(object sender, RoutedEventArgs e)
         {
