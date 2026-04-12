@@ -113,6 +113,7 @@
                         <!-- Настройки -->
                         <Button Style="{StaticResource NavButtonStyle}"
                                 Margin="0,2,0,0"
+                                Click="Settings_Click"
                                 ToolTip="Настройки">
                             <StackPanel Orientation="Horizontal">
                                 <Viewbox Width="16" Height="16" Margin="0,0,10,0">
