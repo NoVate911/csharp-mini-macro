@@ -20,17 +20,29 @@
 - **Настройки** — количество повторов (до 50), скорость воспроизведения (до 5x)
 - **Сохранение / загрузка** — собственный формат `.mmacro`
 
+## Версии
+
+| Версия  | Платформа              | ОС             |
+|---------|------------------------|----------------|
+| Modern  | .NET 10.0              | Windows 10/11  |
+| Legacy  | .NET Framework 4.8     | Windows 7 SP1+ |
+
 ## Сборка
 
-**Требования:** .NET 10.0 SDK, Windows 10/11
+**Требования:** .NET 10.0 SDK (или .NET Framework 4.8), Windows
 
 ```bash
 git clone https://github.com/NoVate911/Mini-Macro.git
 cd "Mini Macro"
-dotnet build -c Release
+
+# Modern (.NET 10.0, Windows 10/11)
+dotnet build -f net10.0-windows -c Release
+
+# Legacy (.NET Framework 4.8, Windows 7 SP1+)
+dotnet build -f net48 -c Release
 ```
 
-Исполняемый файл появится в `bin\Release\net10.0-windows\`.
+Исполняемые файлы появятся в `bin\Release\net10.0-windows\` и `bin\Release\net48\` соответственно.
 
 ## Использование
 
