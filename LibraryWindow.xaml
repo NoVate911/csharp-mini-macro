@@ -119,17 +119,16 @@
                  ПОИСК
             ══════════════════════════════════════════════ -->
             <Grid Grid.Row="3" Margin="16,12,16,12">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/> <!-- Иконка поиска -->
-                    <ColumnDefinition Width="*"/>    <!-- Поле -->
-                </Grid.ColumnDefinitions>
+                <!-- Иконка лупы и TextBox в одной ячейке: иконка — оверлей слева -->
+                <TextBox Style="{StaticResource SearchBoxStyle}"
+                         Tag="Поиск макроса..."
+                         Padding="34,0,10,0"/>
 
-                <!-- Иконка лупы поверх поля -->
-                <Viewbox Grid.Column="0" Width="14" Height="14"
-                         Margin="0,0,0,0"
+                <Viewbox Width="14" Height="14"
+                         HorizontalAlignment="Left"
                          VerticalAlignment="Center"
-                         IsHitTestVisible="False"
-                         Panel.ZIndex="1">
+                         Margin="11,0,0,0"
+                         IsHitTestVisible="False">
                     <Path Data="M 6,1 A 5,5 0 1,1 5.999,1 Z M 9.5,9.5 L 14,14"
                           Stroke="{StaticResource TextSecondaryBrush}"
                           StrokeThickness="1.5"
@@ -137,12 +136,6 @@
                           StrokeEndLineCap="Round"
                           Fill="Transparent"/>
                 </Viewbox>
-
-                <!-- TextBox с отступом для иконки -->
-                <TextBox Grid.Column="0" Grid.ColumnSpan="2"
-                         Style="{StaticResource SearchBoxStyle}"
-                         Tag="Поиск макроса..."
-                         Padding="32,0,10,0"/>
             </Grid>
 
             <!-- ══════════════════════════════════════════════
@@ -162,6 +155,20 @@
                                             HotkeyText=""/>
                     <local:MacroItemControl MacroName="Запуск приложений"
                                             HotkeyText="Ctrl+Shift+L"/>
+                    <local:MacroItemControl MacroName="Резервное копирование"
+                                            HotkeyText="Ctrl+B"/>
+                    <local:MacroItemControl MacroName="Открыть браузер"
+                                            HotkeyText=""/>
+                    <local:MacroItemControl MacroName="Снимок экрана"
+                                            HotkeyText="Alt+S"/>
+                    <local:MacroItemControl MacroName="Перезагрузка сети"
+                                            HotkeyText=""/>
+                    <local:MacroItemControl MacroName="Очистка временных файлов"
+                                            HotkeyText="Ctrl+Shift+D"/>
+                    <local:MacroItemControl MacroName="Переключение VPN"
+                                            HotkeyText=""/>
+                    <local:MacroItemControl MacroName="Ежемесячный отчёт"
+                                            HotkeyText="Ctrl+M"/>
                 </StackPanel>
             </ScrollViewer>
 
@@ -172,7 +179,7 @@
                  ФУТЕР: количество макросов
             ══════════════════════════════════════════════ -->
             <Grid Grid.Row="6" Margin="16,0">
-                <TextBlock Text="5 макросов"
+                <TextBlock Text="12 макросов"
                            Foreground="{StaticResource TextSecondaryBrush}"
                            FontFamily="Segoe UI" FontSize="11"
                            VerticalAlignment="Center"/>

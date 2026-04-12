@@ -413,5 +413,93 @@
             </Setter>
         </Style>
 
+        <!-- ╔══════════════════════════════════════════════╗
+             ║  СКРОЛЛБАР                                   ║
+             ╚══════════════════════════════════════════════╝ -->
+
+        <!-- Ползунок: серый → светлее на hover, акцентный при перетаскивании -->
+        <Style x:Key="ScrollThumbStyle" TargetType="Thumb">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border x:Name="Bd" Background="#3C3C3C" CornerRadius="3"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#525252"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Неявный стиль: применяется ко всем ScrollBar в приложении -->
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Style.Triggers>
+                <!-- Вертикальный -->
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="6"/>
+                    <Setter Property="Height" Value="Auto"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Grid Background="Transparent" Margin="0,4,2,4">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                        <!-- Невидимые кнопки-стрелки (место под track) -->
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Opacity="0" Focusable="False"
+                                                          Command="{x:Static ScrollBar.PageUpCommand}"/>
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Opacity="0" Focusable="False"
+                                                          Command="{x:Static ScrollBar.PageDownCommand}"/>
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource ScrollThumbStyle}"
+                                                   MinHeight="20"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <!-- Горизонтальный -->
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="6"/>
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <Grid Background="Transparent" Margin="4,0,4,2">
+                                    <Track x:Name="PART_Track">
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton Opacity="0" Focusable="False"
+                                                          Command="{x:Static ScrollBar.PageLeftCommand}"/>
+                                        </Track.DecreaseRepeatButton>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton Opacity="0" Focusable="False"
+                                                          Command="{x:Static ScrollBar.PageRightCommand}"/>
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource ScrollThumbStyle}"
+                                                   MinWidth="20"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Application.Resources>
 </Application>
