@@ -90,6 +90,7 @@
 
                         <!-- Библиотека -->
                         <Button Style="{StaticResource NavButtonStyle}"
+                                Click="Library_Click"
                                 ToolTip="Библиотека макросов">
                             <StackPanel Orientation="Horizontal">
                                 <Viewbox Width="16" Height="16" Margin="0,0,10,0">
