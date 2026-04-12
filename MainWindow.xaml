@@ -229,12 +229,9 @@
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center">
 
-                            <!-- Запись -->
+                            <!-- Запись (круг встроен в шаблон стиля) -->
                             <Button Style="{StaticResource RecordButtonStyle}"
-                                    Margin="0,0,14,0" ToolTip="Начать запись">
-                                <Ellipse Width="22" Height="22"
-                                         Fill="{StaticResource RecordBrush}"/>
-                            </Button>
+                                    Margin="0,0,14,0" ToolTip="Начать запись"/>
 
                             <!-- Воспроизведение -->
                             <Button Style="{StaticResource TransportButtonStyle}"

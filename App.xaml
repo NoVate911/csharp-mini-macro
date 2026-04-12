@@ -145,20 +145,26 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
+                        <!-- BorderThickness="1" резервирует место под рамку hover -->
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="3">
+                                CornerRadius="3"
+                                BorderThickness="1"
+                                BorderBrush="Transparent">
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource HoverBrush}"/>
+                                <!-- Заметное осветление + тонкая рамка -->
+                                <Setter TargetName="Bd" Property="Background" Value="#303030"/>
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{StaticResource AppBorderBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{StaticResource PressedBrush}"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -168,6 +174,8 @@
 
         <!-- ╔══════════════════════════════════════════════╗
              ║  КНОПКА ЗАПИСИ (большая, с рамкой)          ║
+             ║  Круг встроен в шаблон — меняет цвет на     ║
+             ║  белый при hover, чтобы не сливаться        ║
              ╚══════════════════════════════════════════════╝ -->
         <Style x:Key="RecordButtonStyle" TargetType="Button">
             <Setter Property="Width"           Value="60"/>
@@ -184,19 +192,24 @@
                                 CornerRadius="3"
                                 BorderThickness="2"
                                 BorderBrush="{StaticResource RecordBrush}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                            <!-- Иконка: красный круг, становится белым на hover -->
+                            <Ellipse x:Name="Dot"
+                                     Width="22" Height="22"
+                                     Fill="{StaticResource RecordBrush}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
+                                <Setter TargetName="Bd"  Property="Background"
                                         Value="{StaticResource RecordBrush}"/>
+                                <!-- Белый круг контрастирует с красным фоном -->
+                                <Setter TargetName="Dot" Property="Fill" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
+                                <Setter TargetName="Bd"  Property="Background"
                                         Value="{StaticResource RecordDimBrush}"/>
-                                <Setter TargetName="Bd" Property="BorderBrush"
+                                <Setter TargetName="Bd"  Property="BorderBrush"
                                         Value="{StaticResource RecordDimBrush}"/>
+                                <Setter TargetName="Dot" Property="Fill" Value="White"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -261,13 +274,12 @@
                                               VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <!-- Заметное затемнение: #1ED895 → #13A06E → #0E7A54 -->
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource AccentDimBrush}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#13A06E"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource AccentDimBrush}"/>
+                                <Setter TargetName="Bd" Property="Background" Value="#0E7A54"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
