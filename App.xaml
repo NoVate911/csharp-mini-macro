@@ -359,19 +359,19 @@
 
         <!-- ╔══════════════════════════════════════════════╗
              ║  ПОЛЕ ПОИСКА                                 ║
-             ║  Placeholder через Tag + ControlTemplate    ║
+             ║  Иконка лупы встроена в шаблон — гарантирует║
+             ║  одинаковое смещение у placeholder и текста ║
              ╚══════════════════════════════════════════════╝ -->
         <Style x:Key="SearchBoxStyle" TargetType="TextBox">
-            <Setter Property="Background"      Value="{StaticResource SurfaceBrush}"/>
-            <Setter Property="Foreground"      Value="{StaticResource TextPrimaryBrush}"/>
-            <Setter Property="CaretBrush"      Value="{StaticResource AccentBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush"     Value="{StaticResource AppBorderBrush}"/>
-            <Setter Property="FontFamily"      Value="Segoe UI"/>
-            <Setter Property="FontSize"        Value="13"/>
-            <Setter Property="Padding"         Value="10,0,10,0"/>
-            <Setter Property="Height"          Value="34"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background"       Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="Foreground"       Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="CaretBrush"       Value="{StaticResource AccentBrush}"/>
+            <Setter Property="SelectionBrush"   Value="{StaticResource AccentBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="BorderBrush"      Value="{StaticResource AppBorderBrush}"/>
+            <Setter Property="FontFamily"       Value="Segoe UI"/>
+            <Setter Property="FontSize"         Value="13"/>
+            <Setter Property="Height"           Value="34"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -382,27 +382,39 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="3">
                             <Grid>
-                                <!-- Placeholder: виден когда Text пустой -->
+                                <!-- Иконка лупы — фиксированная позиция внутри рамки -->
+                                <Viewbox Width="14" Height="14"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center"
+                                         Margin="10,0,0,0"
+                                         IsHitTestVisible="False">
+                                    <Path Data="M 6,1 A 5,5 0 1,1 5.999,1 Z M 9.5,9.5 L 14,14"
+                                          Stroke="{StaticResource TextSecondaryBrush}"
+                                          StrokeThickness="1.5"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"
+                                          Fill="Transparent"/>
+                                </Viewbox>
+
+                                <!-- Placeholder и текст на одинаковом отступе от лупы -->
                                 <TextBlock x:Name="Placeholder"
                                            Text="{TemplateBinding Tag}"
                                            Foreground="{StaticResource TextSecondaryBrush}"
                                            FontFamily="Segoe UI" FontSize="13"
                                            VerticalAlignment="Center"
-                                           Margin="{TemplateBinding Padding}"
+                                           Margin="34,0,10,0"
                                            IsHitTestVisible="False"
                                            Visibility="Collapsed"/>
                                 <ScrollViewer x:Name="PART_ContentHost"
-                                              Margin="{TemplateBinding Padding}"
+                                              Margin="34,0,10,0"
                                               VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <!-- Показать placeholder только когда поле пустое -->
                             <Trigger Property="Text" Value="">
                                 <Setter TargetName="Placeholder" Property="Visibility"
                                         Value="Visible"/>
                             </Trigger>
-                            <!-- Подсветить рамку при фокусе -->
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="Bd" Property="BorderBrush"
                                         Value="{StaticResource AccentBrush}"/>
