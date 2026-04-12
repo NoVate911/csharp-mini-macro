@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace MiniMacroInstaller
@@ -8,7 +11,16 @@ namespace MiniMacroInstaller
         {
             base.OnStartup(e);
 
-            if (e.Args.Length > 0 && e.Args[0] == "--uninstall")
+            // Показываем UninstallWindow если:
+            // - передан аргумент --uninstall (запуск из «Программ и компонентов»)
+            // - либо сам exe называется uninstall.exe (двойной клик)
+            var exeName = Path.GetFileNameWithoutExtension(
+                Assembly.GetEntryAssembly()?.Location ?? string.Empty);
+
+            bool isUninstall = (e.Args.Length > 0 && e.Args[0] == "--uninstall")
+                            || exeName.Equals("uninstall", StringComparison.OrdinalIgnoreCase);
+
+            if (isUninstall)
                 new UninstallWindow().Show();
             else
                 new InstallerWindow().Show();
