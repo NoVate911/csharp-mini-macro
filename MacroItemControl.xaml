@@ -1,0 +1,163 @@
+<UserControl x:Class="MiniMacro.MacroItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MiniMacro"
+             x:Name="Root">
+
+    <Border Padding="16,0,12,0">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="Transparent"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource HoverBrush}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+
+        <StackPanel>
+            <Grid Height="56">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>  <!-- Иконка файла -->
+                    <ColumnDefinition Width="*"/>     <!-- Имя + hotkey -->
+                    <ColumnDefinition Width="Auto"/>  <!-- Кнопки действий -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Иконка: документ .mmacro -->
+                <Viewbox Grid.Column="0" Width="16" Height="16"
+                         Margin="0,0,12,0" VerticalAlignment="Center">
+                    <!-- Иконка: файл с загнутым уголком -->
+                    <Path Data="M 2,1 L 10,1 L 14,5 L 14,15 L 2,15 Z
+                                M 10,1 L 10,5 L 14,5
+                                M 5,8 L 11,8 M 5,10.5 L 11,10.5 M 5,13 L 9,13"
+                          Stroke="{StaticResource TextSecondaryBrush}"
+                          StrokeThickness="1.2"
+                          Fill="Transparent"
+                          StrokeLineJoin="Round"/>
+                </Viewbox>
+
+                <!-- Имя + hotkey badge -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding MacroName, ElementName=Root}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontFamily="Segoe UI" FontSize="13"
+                               TextTrimming="CharacterEllipsis"
+                               Margin="0,0,0,4"/>
+
+                    <!-- Hotkey badge: скрыт если HotkeyText пустой -->
+                    <Border CornerRadius="3"
+                            Background="{StaticResource SurfaceBrush}"
+                            BorderBrush="{StaticResource AppBorderBrush}"
+                            BorderThickness="1"
+                            Padding="6,2"
+                            HorizontalAlignment="Left">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding HotkeyText, ElementName=Root}"
+                                                 Value="">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <!-- Иконка: клавиша клавиатуры -->
+                            <Viewbox Width="11" Height="11" Margin="0,0,4,0">
+                                <Path Data="M 1,3 L 15,3 L 15,12 L 1,12 Z
+                                            M 3,5 L 5,5 M 7,5 L 9,5 M 11,5 L 13,5
+                                            M 3,8 L 5,8 M 7,8 L 13,8
+                                            M 4,10 L 12,10"
+                                      Stroke="{StaticResource TextSecondaryBrush}"
+                                      StrokeThickness="1.3"
+                                      Fill="Transparent"/>
+                            </Viewbox>
+                            <TextBlock Text="{Binding HotkeyText, ElementName=Root}"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontFamily="Segoe UI" FontSize="10"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Кнопки действий -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal"
+                            VerticalAlignment="Center">
+
+                    <!-- Загрузить -->
+                    <Button Style="{StaticResource IconButtonStyle}"
+                            Margin="0,0,2,0"
+                            ToolTip="Загрузить макрос">
+                        <Viewbox Width="13" Height="13">
+                            <!-- Иконка: треугольник play -->
+                            <Path Data="M 3,2 L 13,8 L 3,14 Z"
+                                  Fill="{Binding Foreground,
+                                      RelativeSource={RelativeSource AncestorType=Button}}"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- Перезаписать -->
+                    <Button Style="{StaticResource IconButtonStyle}"
+                            Margin="0,0,2,0"
+                            ToolTip="Перезаписать текущим макросом">
+                        <Viewbox Width="13" Height="13">
+                            <!-- Иконка: круговая стрелка (обновить/перезаписать) -->
+                            <Path Data="M 13,5 C 11.8,2.8 9.1,1.5 6.2,2.2 C 3.3,2.9 1.5,5.7 2,8.7
+                                        C 2.5,11.6 5.1,13.5 8,13.5 C 10.7,13.5 13,11.8 13.8,9.3
+                                        M 13,5 L 13,1 M 13,5 L 9,5"
+                                  Stroke="{Binding Foreground,
+                                      RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="1.4"
+                                  StrokeLineJoin="Round"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Fill="Transparent"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- Назначить горячую клавишу -->
+                    <Button Style="{StaticResource IconButtonStyle}"
+                            Margin="0,0,2,0"
+                            ToolTip="Назначить горячую клавишу">
+                        <Viewbox Width="13" Height="13">
+                            <!-- Иконка: клавиша -->
+                            <Path Data="M 1,4 L 15,4 L 15,11 L 1,11 Z
+                                        M 3,6 L 5,6 M 7,6 L 9,6 M 11,6 L 13,6
+                                        M 3,8.5 L 13,8.5"
+                                  Stroke="{Binding Foreground,
+                                      RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="1.3"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Fill="Transparent"/>
+                        </Viewbox>
+                    </Button>
+
+                    <!-- Удалить -->
+                    <Button Style="{StaticResource IconButtonDangerStyle}"
+                            ToolTip="Удалить макрос">
+                        <Viewbox Width="13" Height="13">
+                            <!-- Иконка: корзина -->
+                            <Path Data="M 2,4 L 14,4
+                                        M 5,2 L 11,2 L 11,4 L 5,4 Z
+                                        M 3.5,4 L 4.5,13 L 11.5,13 L 12.5,4
+                                        M 6.5,6 L 6.8,11 M 9.5,6 L 9.2,11"
+                                  Stroke="{Binding Foreground,
+                                      RelativeSource={RelativeSource AncestorType=Button}}"
+                                  StrokeThickness="1.3"
+                                  StrokeLineJoin="Round"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Fill="Transparent"/>
+                        </Viewbox>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Разделитель между элементами -->
+            <Rectangle Height="1" Fill="{StaticResource DividerBrush}"
+                       Margin="-16,0,-12,0"/>
+        </StackPanel>
+    </Border>
+</UserControl>
