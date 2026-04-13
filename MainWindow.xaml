@@ -23,6 +23,16 @@
                 <RowDefinition Height="*"/>   <!-- Контент -->
             </Grid.RowDefinitions>
 
+            <!-- Отладочное уведомление о горячей клавише -->
+            <TextBlock x:Name="HotkeyDebugText"
+                       Grid.Row="1"
+                       Foreground="{StaticResource AccentBrush}"
+                       FontFamily="Segoe UI" FontSize="12"
+                       HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                       Margin="0,0,14,14"
+                       Visibility="Collapsed"
+                       Panel.ZIndex="100"/>
+
             <!-- ══════════════════════════════════════════════
                  ЗАГОЛОВОК ОКНА
             ══════════════════════════════════════════════ -->

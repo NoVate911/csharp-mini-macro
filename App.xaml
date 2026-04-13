@@ -602,6 +602,10 @@
                                 <Setter TargetName="Bd" Property="Background"
                                         Value="{StaticResource PressedBrush}"/>
                             </Trigger>
+                            <Trigger Property="Tag" Value="capturing">
+                                <Setter TargetName="Bd" Property="BorderBrush"
+                                        Value="{StaticResource AccentBrush}"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>

@@ -9,7 +9,8 @@
         AllowsTransparency="False"
         Background="{StaticResource BgBrush}"
         WindowStartupLocation="CenterScreen"
-        Icon="logo.ico">
+        Icon="logo.ico"
+        PreviewKeyDown="Window_PreviewKeyDown">
 
     <Border BorderBrush="{StaticResource AppBorderBrush}" BorderThickness="1">
         <Grid>
@@ -78,8 +79,9 @@
                           Fill="Transparent"/>
                 </Viewbox>
 
-                <TextBlock Grid.Column="1"
-                           Text="C:\Users\NoVate\Documents\Macros"
+                <TextBlock x:Name="FolderPathText"
+                           Grid.Column="1"
+                           Text="Папка не выбрана"
                            Foreground="{StaticResource TextSecondaryBrush}"
                            FontFamily="Segoe UI" FontSize="12"
                            VerticalAlignment="Center"
@@ -88,6 +90,7 @@
                 <Button Grid.Column="2"
                         Style="{StaticResource ActionButtonStyle}"
                         Padding="12,0"
+                        Click="ChangeFolder_Click"
                         ToolTip="Изменить папку с макросами">
                     <StackPanel Orientation="Horizontal">
                         <Viewbox Width="12" Height="12" Margin="0,0,5,0">
@@ -107,21 +110,21 @@
             <Rectangle Grid.Row="2" Fill="{StaticResource DividerBrush}"/>
 
             <!-- ══════════════════════════════════════════════
-                 ПОИСК — иконка встроена в шаблон SearchBoxStyle
+                 ПОИСК
             ══════════════════════════════════════════════ -->
             <Grid Grid.Row="3" Margin="16,12,16,12">
-                <TextBox Style="{StaticResource SearchBoxStyle}"
+                <TextBox x:Name="SearchBox"
+                         Style="{StaticResource SearchBoxStyle}"
                          Tag="Поиск макроса..."
                          TextChanged="Search_TextChanged"/>
             </Grid>
 
             <!-- ══════════════════════════════════════════════
-                 СПИСОК МАКРОСОВ — заполняется из code-behind
+                 СПИСОК МАКРОСОВ
             ══════════════════════════════════════════════ -->
             <ScrollViewer Grid.Row="4"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
-                <!-- Пустое состояние: виден когда список пуст -->
                 <Grid>
                     <StackPanel x:Name="MacroList"/>
 
@@ -130,14 +133,13 @@
                                 HorizontalAlignment="Center"
                                 Visibility="Collapsed">
                         <Viewbox Width="32" Height="32" Margin="0,0,0,12">
-                            <Path Data="M 6,1 A 5,5 0 1,1 5.999,1 Z M 9.5,9.5 L 14,14"
+                            <Path Data="M 1,4 L 6,4 L 8,2 L 15,2 L 15,12 L 1,12 Z"
                                   Stroke="{StaticResource TextSecondaryBrush}"
-                                  StrokeThickness="1.2"
-                                  StrokeStartLineCap="Round"
-                                  StrokeEndLineCap="Round"
+                                  StrokeThickness="1.2" StrokeLineJoin="Round"
                                   Fill="Transparent"/>
                         </Viewbox>
-                        <TextBlock Text="Ничего не найдено"
+                        <TextBlock x:Name="EmptyStateText"
+                                   Text="Выберите папку с макросами"
                                    Foreground="{StaticResource TextSecondaryBrush}"
                                    FontFamily="Segoe UI" FontSize="13"
                                    HorizontalAlignment="Center"/>
@@ -155,6 +157,14 @@
                            Foreground="{StaticResource TextSecondaryBrush}"
                            FontFamily="Segoe UI" FontSize="11"
                            VerticalAlignment="Center"/>
+
+                <!-- Подсказка при захвате хоткея -->
+                <TextBlock x:Name="CaptureHintText"
+                           Foreground="{StaticResource AccentBrush}"
+                           FontFamily="Segoe UI" FontSize="11"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Visibility="Collapsed"/>
             </Grid>
         </Grid>
     </Border>
