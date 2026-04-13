@@ -44,6 +44,23 @@ dotnet build -f net48 -c Release
 
 Исполняемые файлы появятся в `bin\Release\net10.0-windows\` и `bin\Release\net48\` соответственно.
 
+## Сборка установщика
+
+Установщик упаковывает обе версии приложения в единый `MiniMacroSetup.exe`.
+
+```bash
+# 1. Собрать основное приложение в папки установщика
+dotnet publish "Mini Macro.csproj" -f net10.0-windows -c Release -o Installer/assets/modern
+dotnet publish "Mini Macro.csproj" -f net48           -c Release -o Installer/assets/legacy
+
+# 2. Собрать установщик
+dotnet build Installer/Installer.csproj -c Release
+```
+
+Готовый установщик: `Installer\bin\Release\net48\MiniMacroSetup.exe`
+
+> Для сборки установщика требуется .NET Framework 4.8 SDK.
+
 ## Использование
 
 1. Нажмите **Запись** — выполните нужные действия

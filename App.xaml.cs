@@ -1,14 +1,15 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
 
 namespace MiniMacro
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-    }
+        internal static MacroEngine Engine { get; } = new MacroEngine();
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            SettingsManager.Load();
+            base.OnStartup(e);
+        }
+    }
 }

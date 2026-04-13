@@ -1,4 +1,4 @@
-# CLAUDE.md — Mini Macro
+# SPEC.md — Mini Macro
 
 ## О проекте
 

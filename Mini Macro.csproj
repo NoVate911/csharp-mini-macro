@@ -17,6 +17,14 @@
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <!-- Исключить подпроект Installer из glob-паттернов главного проекта -->
+  <ItemGroup>
+    <Compile Remove="Installer\**"/>
+    <Page    Remove="Installer\**"/>
+    <None    Remove="Installer\**"/>
+    <EmbeddedResource Remove="Installer\**"/>
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)'=='net48'">
     <DefineConstants>LEGACY</DefineConstants>
     <LangVersion>latest</LangVersion>
@@ -25,6 +33,11 @@
   <ItemGroup>
     <!-- logo.ico как встроенный ресурс: нужен для Window.Icon и ApplicationIcon -->
     <Resource Include="logo.ico"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
+    <PackageReference Include="System.Text.Json" Version="9.0.0"/>
+    <Reference Include="System.Windows.Forms"/>
   </ItemGroup>
 
 </Project>

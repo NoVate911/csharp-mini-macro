@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>MiniMacroInstaller</RootNamespace>
+    <AssemblyName>MiniMacroSetup</AssemblyName>
+    <AssemblyTitle>Mini Macro Setup</AssemblyTitle>
+    <UseWPF>true</UseWPF>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>..\logo.ico</ApplicationIcon>
+    <Product>Mini Macro</Product>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="..\logo.ico" Link="logo.ico"/>
+    <Reference Include="System.Windows.Forms"/>
+    <!-- dynamic keyword требует Microsoft.CSharp в net48 -->
+    <Reference Include="Microsoft.CSharp"/>
+  </ItemGroup>
+
+</Project>
