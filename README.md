@@ -49,9 +49,9 @@ dotnet build -f net48 -c Release
 Установщик упаковывает обе версии приложения в единый `MiniMacroSetup.exe`.
 
 ```bash
-# 1. Собрать основное приложение в папки установщика
-dotnet publish "Mini Macro.csproj" -f net10.0-windows -c Release -o Installer/assets/modern
-dotnet publish "Mini Macro.csproj" -f net48           -c Release -o Installer/assets/legacy
+# 1. Опубликовать основное приложение в папки assets установщика
+dotnet publish "Mini Macro.csproj" -f net10.0-windows -c Release -o "Installer/bin/Release/net48/assets/modern"
+dotnet publish "Mini Macro.csproj" -f net48           -c Release -o "Installer/bin/Release/net48/assets/legacy"
 
 # 2. Собрать установщик
 dotnet build Installer/Installer.csproj -c Release
@@ -59,7 +59,8 @@ dotnet build Installer/Installer.csproj -c Release
 
 Готовый установщик: `Installer\bin\Release\net48\MiniMacroSetup.exe`
 
-> Для сборки установщика требуется .NET Framework 4.8 SDK.
+> Для сборки установщика требуется .NET Framework 4.8 SDK.  
+> Команда `publish` (не `build`) используется намеренно — она копирует все необходимые зависимости (`.dll`, `.deps.json`, `.runtimeconfig.json`) вместе с `.exe`.
 
 ## Использование
 
