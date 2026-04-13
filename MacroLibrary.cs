@@ -35,6 +35,21 @@ namespace MiniMacro
             return result;
         }
 
+        // Сохраняет текущий макрос в файл .mmacro
+        public static void SaveMacro(List<MacroAction> actions, int screenW, int screenH, string filePath)
+        {
+            var data = new
+            {
+                version      = 1,
+                screenWidth  = screenW,
+                screenHeight = screenH,
+                actions
+            };
+            var json = JsonSerializer.Serialize(data,
+                new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, json);
+        }
+
         // Проверяет структуру .mmacro (JSON с полями version + actions[])
         private static (bool hasError, string errorMsg) ValidateFile(string filePath)
         {

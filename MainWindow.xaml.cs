@@ -3,20 +3,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace MiniMacro
 {
     public partial class MainWindow : Window
     {
-        private DispatcherTimer? _debugTimer;
+        private static MacroEngine Engine => App.Engine;
 
         public MainWindow()
         {
             InitializeComponent();
-
-            // Когда пользователь загружает макрос из библиотеки
             MacroLibrary.MacroLoaded += OnMacroLoaded;
+            Engine.StateChanged      += OnStateChanged;
+            UpdateTransportUI(MacroState.Idle);
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -27,7 +26,6 @@ namespace MiniMacro
             HotkeyManager.MacroHotkeyFired += OnMacroHotkeyFired;
             HotkeyManager.RegisterAll();
 
-            // Зарегистрировать хоткеи макросов из сохранённых настроек
             var macros = MacroLibrary.LoadEntries();
             HotkeyManager.RegisterMacroHotkeys(macros);
         }
@@ -35,44 +33,166 @@ namespace MiniMacro
         protected override void OnClosed(EventArgs e)
         {
             MacroLibrary.MacroLoaded       -= OnMacroLoaded;
+            Engine.StateChanged            -= OnStateChanged;
             HotkeyManager.MacroHotkeyFired -= OnMacroHotkeyFired;
             HotkeyManager.UnregisterAll();
             HotkeyManager.UnregisterMacroHotkeys();
             base.OnClosed(e);
         }
 
+        // ── Обновление UI ────────────────────────────────────────────────────
+
+        private void OnStateChanged(MacroState state) =>
+            Dispatcher.Invoke(() => UpdateTransportUI(state));
+
+        private void UpdateTransportUI(MacroState state)
+        {
+            RecordButton.IsEnabled = state == MacroState.Idle || state == MacroState.Recording;
+            PlayButton.IsEnabled   = state == MacroState.Idle && Engine.HasRecording;
+            PauseButton.IsEnabled  = state == MacroState.Playing || state == MacroState.Paused;
+            StopButton.IsEnabled   = state != MacroState.Idle;
+            SaveButton.IsEnabled   = state == MacroState.Idle && Engine.HasRecording;
+            LoadButton.IsEnabled   = state == MacroState.Idle;
+
+            StatusText.Text = state switch
+            {
+                MacroState.Recording => "● Запись...",
+                MacroState.Playing   => "▶ Воспроизведение",
+                MacroState.Paused    => "⏸ Пауза",
+                _                    => ""
+            };
+            StatusText.Visibility = state == MacroState.Idle
+                ? Visibility.Collapsed : Visibility.Visible;
+
+            if (state == MacroState.Idle && Engine.CurrentName != null)
+                MacroNameText.Text = Engine.CurrentName;
+        }
+
         // ── Хоткеи ──────────────────────────────────────────────────────────
 
         private void OnHotkeyFired(string action)
         {
-            ShowDebugNotification($"Горячая клавиша: {action}");
+            if (Engine.State == MacroState.Recording)
+            {
+                // Во время записи только хоткей Record останавливает запись
+                if (action == "Record") Engine.StopRecording();
+                return;
+            }
+
+            switch (action)
+            {
+                case "Record": ToggleRecord(); break;
+                case "Play":   DoPlay();       break;
+                case "Pause":  Engine.Pause(); break;
+                case "Stop":   Engine.Stop();  break;
+            }
         }
 
         private void OnMacroHotkeyFired(string filePath)
         {
-            var name = Path.GetFileNameWithoutExtension(filePath);
-            MacroNameText.Text = name;
-            ShowDebugNotification($"Макрос: {name}");
+            if (Engine.State == MacroState.Recording) return;
+            try
+            {
+                Engine.LoadFrom(filePath);
+                Engine.StartPlayback();
+                MacroNameText.Text = Engine.CurrentName ?? "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при запуске макроса:\n{ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnMacroLoaded(string filePath)
         {
-            MacroNameText.Text = Path.GetFileNameWithoutExtension(filePath);
+            try
+            {
+                Engine.LoadFrom(filePath);
+                MacroNameText.Text = Engine.CurrentName ?? "";
+                UpdateTransportUI(Engine.State);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке макроса:\n{ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void ShowDebugNotification(string text)
-        {
-            HotkeyDebugText.Text       = text;
-            HotkeyDebugText.Visibility = Visibility.Visible;
+        // ── Транспортные кнопки ──────────────────────────────────────────────
 
-            _debugTimer?.Stop();
-            _debugTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
-            _debugTimer.Tick += (s, ev) =>
+        private void Record_Click(object sender, RoutedEventArgs e) => ToggleRecord();
+        private void Play_Click  (object sender, RoutedEventArgs e) => DoPlay();
+        private void Pause_Click (object sender, RoutedEventArgs e) => Engine.Pause();
+        private void Stop_Click  (object sender, RoutedEventArgs e) => Engine.Stop();
+
+        private void ToggleRecord()
+        {
+            if (Engine.State == MacroState.Idle)
             {
-                HotkeyDebugText.Visibility = Visibility.Collapsed;
-                _debugTimer!.Stop();
+                Engine.StartRecording();
+            }
+            else if (Engine.State == MacroState.Recording)
+            {
+                Engine.StopRecording();
+                MacroNameText.Text = Engine.HasRecording ? "Новый макрос" : "— не выбран —";
+                UpdateTransportUI(MacroState.Idle);
+            }
+        }
+
+        private void DoPlay()
+        {
+            if (Engine.State != MacroState.Idle || !Engine.HasRecording) return;
+            Engine.StartPlayback();
+        }
+
+        // ── Загрузка / Сохранение ────────────────────────────────────────────
+
+        private void Load_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Title  = "Открыть макрос",
+                Filter = "Файлы макросов (*.mmacro)|*.mmacro"
             };
-            _debugTimer.Start();
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                Engine.LoadFrom(dialog.FileName);
+                MacroNameText.Text = Engine.CurrentName ?? "";
+                UpdateTransportUI(Engine.State);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке:\n{ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Engine.HasRecording) return;
+
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title      = "Сохранить макрос",
+                Filter     = "Файлы макросов (*.mmacro)|*.mmacro",
+                DefaultExt = ".mmacro",
+                FileName   = Engine.CurrentName ?? "Новый макрос"
+            };
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                Engine.SaveTo(dialog.FileName);
+                MacroNameText.Text = Engine.CurrentName ?? "";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении:\n{ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         // ── Управление окном ─────────────────────────────────────────────────

@@ -102,7 +102,32 @@ namespace MiniMacro
 
         private void OnOverwrite(MacroEntry entry)
         {
-            // Функциональность будет реализована вместе с записью макросов
+            var engine = App.Engine;
+            if (!engine.HasRecording)
+            {
+                MessageBox.Show("Нет записанного макроса для перезаписи.",
+                    "Перезапись", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                $"Перезаписать «{entry.Name}» текущим макросом?",
+                "Перезапись макроса",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result != MessageBoxResult.Yes) return;
+
+            try
+            {
+                engine.SaveTo(entry.FilePath);
+                LoadMacros();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при перезаписи:\n{ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void OnHotkeyRequested(MacroItemControl item, MacroEntry entry)

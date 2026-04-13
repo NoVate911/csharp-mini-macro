@@ -23,16 +23,6 @@
                 <RowDefinition Height="*"/>   <!-- Контент -->
             </Grid.RowDefinitions>
 
-            <!-- Отладочное уведомление о горячей клавише -->
-            <TextBlock x:Name="HotkeyDebugText"
-                       Grid.Row="1"
-                       Foreground="{StaticResource AccentBrush}"
-                       FontFamily="Segoe UI" FontSize="12"
-                       HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                       Margin="0,0,14,14"
-                       Visibility="Collapsed"
-                       Panel.ZIndex="100"/>
-
             <!-- ══════════════════════════════════════════════
                  ЗАГОЛОВОК ОКНА
             ══════════════════════════════════════════════ -->
@@ -237,25 +227,39 @@
                                        HorizontalAlignment="Center"/>
                         </StackPanel>
 
+                        <!-- Статус -->
+                        <TextBlock x:Name="StatusText"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   FontFamily="Segoe UI" FontSize="12"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,14"
+                                   Visibility="Collapsed"/>
+
                         <!-- Транспортные кнопки -->
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center">
 
                             <!-- Запись (круг встроен в шаблон стиля) -->
-                            <Button Style="{StaticResource RecordButtonStyle}"
-                                    Margin="0,0,14,0" ToolTip="Начать запись"/>
+                            <Button x:Name="RecordButton"
+                                    Style="{StaticResource RecordButtonStyle}"
+                                    Margin="0,0,14,0" ToolTip="Начать запись"
+                                    Click="Record_Click"/>
 
                             <!-- Воспроизведение -->
-                            <Button Style="{StaticResource TransportButtonStyle}"
-                                    Margin="0,0,6,0" ToolTip="Воспроизвести">
+                            <Button x:Name="PlayButton"
+                                    Style="{StaticResource TransportButtonStyle}"
+                                    Margin="0,0,6,0" ToolTip="Воспроизвести"
+                                    Click="Play_Click">
                                 <!-- Треугольник (play) -->
                                 <Path Data="M 5,3 L 14,8 L 5,13 Z"
                                       Fill="{StaticResource AccentBrush}"/>
                             </Button>
 
                             <!-- Пауза -->
-                            <Button Style="{StaticResource TransportButtonStyle}"
-                                    Margin="0,0,6,0" ToolTip="Пауза">
+                            <Button x:Name="PauseButton"
+                                    Style="{StaticResource TransportButtonStyle}"
+                                    Margin="0,0,6,0" ToolTip="Пауза"
+                                    Click="Pause_Click">
                                 <!-- Две вертикальные полосы -->
                                 <Path Data="M 4,3 L 7,3 L 7,13 L 4,13 Z
                                             M 9,3 L 12,3 L 12,13 L 9,13 Z"
@@ -263,8 +267,10 @@
                             </Button>
 
                             <!-- Стоп -->
-                            <Button Style="{StaticResource TransportButtonStyle}"
-                                    ToolTip="Остановить">
+                            <Button x:Name="StopButton"
+                                    Style="{StaticResource TransportButtonStyle}"
+                                    ToolTip="Остановить"
+                                    Click="Stop_Click">
                                 <!-- Квадрат (stop) -->
                                 <Rectangle Width="13" Height="13"
                                            Fill="{StaticResource TextPrimaryBrush}"/>
@@ -281,9 +287,11 @@
                                     HorizontalAlignment="Right">
 
                             <!-- Загрузить -->
-                            <Button Style="{StaticResource ActionButtonStyle}"
+                            <Button x:Name="LoadButton"
+                                    Style="{StaticResource ActionButtonStyle}"
                                     Margin="0,0,8,0"
-                                    ToolTip="Загрузить макрос из файла">
+                                    ToolTip="Загрузить макрос из файла"
+                                    Click="Load_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <Viewbox Width="14" Height="14" Margin="0,0,7,0">
                                         <!-- Иконка: стрелка вверх (открыть) -->
@@ -304,8 +312,10 @@
                             </Button>
 
                             <!-- Сохранить (акцент) -->
-                            <Button Style="{StaticResource ActionButtonAccentStyle}"
-                                    ToolTip="Сохранить макрос в файл">
+                            <Button x:Name="SaveButton"
+                                    Style="{StaticResource ActionButtonAccentStyle}"
+                                    ToolTip="Сохранить макрос в файл"
+                                    Click="Save_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <Viewbox Width="14" Height="14" Margin="0,0,7,0">
                                         <!-- Иконка: стрелка вниз (сохранить) -->
