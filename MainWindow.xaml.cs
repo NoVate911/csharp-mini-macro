@@ -16,6 +16,18 @@ namespace MiniMacro
             MacroLibrary.MacroLoaded += OnMacroLoaded;
             Engine.StateChanged      += OnStateChanged;
             UpdateTransportUI(MacroState.Idle);
+
+            // Версия и автор из метаданных сборки
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            var v   = asm.GetName().Version;
+            VersionText.Text = $"v{v?.Major}.{v?.Minor}.{v?.Build}";
+            AuthorText.Text  = ((System.Reflection.AssemblyCompanyAttribute?)
+                Attribute.GetCustomAttribute(asm, typeof(System.Reflection.AssemblyCompanyAttribute)))
+                ?.Company ?? "NoVate Source";
+
+            // Слайдеры из настроек
+            SideRepeatSlider.Value = SettingsManager.Current.RepeatCount;
+            SideSpeedSlider.Value  = SettingsManager.Current.PlaybackSpeed;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -221,6 +233,57 @@ namespace MiniMacro
                 FileName        = "https://github.com/NoVate911/csharp-mini-macro",
                 UseShellExecute = true
             });
+        }
+
+        // ── Слайдеры в сайдбаре ──────────────────────────────────────────────
+
+        private void SideRepeat_ValueChanged(object sender,
+            System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (SideRepeatText == null) return;
+            int val = (int)e.NewValue;
+            SideRepeatText.Text = val == 1 ? "1 раз" : $"{val} раза";
+            SettingsManager.Current.RepeatCount = val;
+            SettingsManager.Save();
+        }
+
+        private void SideSpeed_ValueChanged(object sender,
+            System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (SideSpeedText == null) return;
+            SideSpeedText.Text = $"{e.NewValue:F1}×";
+            SettingsManager.Current.PlaybackSpeed = e.NewValue;
+            SettingsManager.Save();
+        }
+
+        // ── Проверка обновлений ───────────────────────────────────────────────
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var result = await UpdateChecker.CheckAsync();
+
+            if (result.CheckFailed)
+            {
+                UpdateStatusText.Text       = "Нет подключения — обновления не проверены";
+                UpdateStatusText.Visibility = Visibility.Visible;
+                return;
+            }
+
+            if (!result.IsUpdateAvailable) return;
+
+            var asm = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            var current = $"v{asm?.Major}.{asm?.Minor}.{asm?.Build}";
+
+            MessageBox.Show(this,
+                $"Установлена версия {current}, доступна {result.LatestVersion}.\n\n" +
+                "Обновите приложение для продолжения работы.",
+                "Требуется обновление",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+
+            Process.Start(new ProcessStartInfo
+                { FileName = result.ReleaseUrl, UseShellExecute = true });
+            Application.Current.Shutdown();
         }
     }
 }
