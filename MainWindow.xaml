@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:MiniMacro"
         mc:Ignorable="d"
         Title="Mini Macro"
+        Loaded="Window_Loaded"
         Height="480" Width="680"
         MinHeight="480" MinWidth="680"
         WindowStyle="None"
@@ -139,14 +140,59 @@
 
                     <!-- Футер сайдбара -->
                     <StackPanel Grid.Row="1" Margin="0,0,0,12">
+
+                        <!-- Параметры воспроизведения -->
+                        <Rectangle Height="1"
+                                   Fill="{StaticResource DividerBrush}"
+                                   Margin="12,0,12,10"/>
+
+                        <DockPanel Margin="16,0,16,2">
+                            <TextBlock Text="ПОВТОРЫ"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
+                                       VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                            <TextBlock x:Name="SideRepeatText"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontFamily="Segoe UI" FontSize="10"
+                                       HorizontalAlignment="Right"/>
+                        </DockPanel>
+                        <Slider x:Name="SideRepeatSlider"
+                                Minimum="1" Maximum="50" SmallChange="1" LargeChange="5"
+                                IsSnapToTickEnabled="True" TickFrequency="1"
+                                Margin="12,2,12,8"
+                                ValueChanged="SideRepeat_ValueChanged"/>
+
+                        <DockPanel Margin="16,0,16,2">
+                            <TextBlock Text="СКОРОСТЬ"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
+                                       VerticalAlignment="Center" DockPanel.Dock="Left"/>
+                            <TextBlock x:Name="SideSpeedText"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontFamily="Segoe UI" FontSize="10"
+                                       HorizontalAlignment="Right"/>
+                        </DockPanel>
+                        <Slider x:Name="SideSpeedSlider"
+                                Minimum="0.5" Maximum="5.0" SmallChange="0.1" LargeChange="0.5"
+                                Margin="12,2,12,10"
+                                ValueChanged="SideSpeed_ValueChanged"/>
+
+                        <!-- Статус обновления (показывается только при отсутствии сети) -->
+                        <TextBlock x:Name="UpdateStatusText"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   FontFamily="Segoe UI" FontSize="10"
+                                   TextWrapping="Wrap"
+                                   Margin="16,0,16,8"
+                                   Visibility="Collapsed"/>
+
                         <Rectangle Height="1"
                                    Fill="{StaticResource DividerBrush}"
                                    Margin="12,0,12,12"/>
-                        <TextBlock Text="v0.1.0"
+                        <TextBlock x:Name="VersionText"
                                    Foreground="{StaticResource TextSecondaryBrush}"
                                    FontFamily="Segoe UI" FontSize="11"
                                    Margin="20,0,0,2"/>
-                        <TextBlock Text="NoVate Source"
+                        <TextBlock x:Name="AuthorText"
                                    Foreground="{StaticResource TextSecondaryBrush}"
                                    FontFamily="Segoe UI" FontSize="11"
                                    Margin="20,0,0,8"/>

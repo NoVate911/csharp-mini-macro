@@ -13,7 +13,7 @@
     <Company>NoVate Source</Company>
     <Product>Mini Macro</Product>
     <Description>Лёгкая программа для записи и воспроизведения макросов клавиатуры и мыши.</Description>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -38,6 +38,7 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <PackageReference Include="System.Text.Json" Version="9.0.0"/>
     <Reference Include="System.Windows.Forms"/>
+    <Reference Include="System.Net.Http"/>
   </ItemGroup>
 
 </Project>
