@@ -266,6 +266,12 @@ namespace MiniMacro
             {
                 UpdateStatusText.Text       = "Нет подключения — обновления не проверены";
                 UpdateStatusText.Visibility = Visibility.Visible;
+                MessageBox.Show(this,
+                    "Не удалось проверить наличие обновлений.\n" +
+                    "Программа будет работать в текущей версии.",
+                    "Нет подключения к интернету",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 return;
             }
 
