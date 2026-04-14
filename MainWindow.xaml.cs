@@ -9,6 +9,7 @@ namespace MiniMacro
     public partial class MainWindow : Window
     {
         private static MacroEngine Engine => App.Engine;
+        private bool _initialized;
 
         public MainWindow()
         {
@@ -25,9 +26,10 @@ namespace MiniMacro
                 Attribute.GetCustomAttribute(asm, typeof(System.Reflection.AssemblyCompanyAttribute)))
                 ?.Company ?? "NoVate Source";
 
-            // Слайдеры из настроек
+            // Слайдеры из настроек (до _initialized=true, чтобы не перезаписать файл)
             SideRepeatSlider.Value = SettingsManager.Current.RepeatCount;
             SideSpeedSlider.Value  = SettingsManager.Current.PlaybackSpeed;
+            _initialized = true;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -243,6 +245,7 @@ namespace MiniMacro
             if (SideRepeatText == null) return;
             int val = (int)e.NewValue;
             SideRepeatText.Text = val == 1 ? "1 раз" : $"{val} раза";
+            if (!_initialized) return;
             SettingsManager.Current.RepeatCount = val;
             SettingsManager.Save();
         }
@@ -252,6 +255,7 @@ namespace MiniMacro
         {
             if (SideSpeedText == null) return;
             SideSpeedText.Text = $"{e.NewValue:F1}×";
+            if (!_initialized) return;
             SettingsManager.Current.PlaybackSpeed = e.NewValue;
             SettingsManager.Save();
         }
