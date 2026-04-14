@@ -75,57 +75,12 @@
                 <StackPanel Margin="20,20,20,8">
 
                     <!-- ────────────────────────────────────────
-                         СЕКЦИЯ: ВОСПРОИЗВЕДЕНИЕ
-                    ──────────────────────────────────────── -->
-                    <TextBlock Text="ВОСПРОИЗВЕДЕНИЕ"
-                               Foreground="{StaticResource TextSecondaryBrush}"
-                               FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
-                               Margin="0,0,0,14"/>
-
-                    <!-- Повторы -->
-                    <Grid Margin="0,0,0,4">
-                        <TextBlock Text="Количество повторов"
-                                   Foreground="{StaticResource TextPrimaryBrush}"
-                                   FontFamily="Segoe UI" FontSize="13"
-                                   VerticalAlignment="Center"/>
-                        <TextBlock x:Name="RepeatValueText"
-                                   Text="1 раз"
-                                   Foreground="{StaticResource AccentBrush}"
-                                   FontFamily="Segoe UI" FontSize="13"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"/>
-                    </Grid>
-                    <Slider x:Name="RepeatSlider"
-                            Style="{StaticResource SliderStyle}"
-                            Minimum="1" Maximum="50" Value="1"
-                            IsSnapToTickEnabled="True" TickFrequency="1"
-                            ValueChanged="RepeatSlider_ValueChanged"/>
-
-                    <!-- Скорость -->
-                    <Grid Margin="0,16,0,4">
-                        <TextBlock Text="Скорость воспроизведения"
-                                   Foreground="{StaticResource TextPrimaryBrush}"
-                                   FontFamily="Segoe UI" FontSize="13"
-                                   VerticalAlignment="Center"/>
-                        <TextBlock x:Name="SpeedValueText"
-                                   Text="1.0×"
-                                   Foreground="{StaticResource AccentBrush}"
-                                   FontFamily="Segoe UI" FontSize="13"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"/>
-                    </Grid>
-                    <Slider x:Name="SpeedSlider"
-                            Style="{StaticResource SliderStyle}"
-                            Minimum="0.5" Maximum="5" Value="1"
-                            ValueChanged="SpeedSlider_ValueChanged"/>
-
-                    <!-- ────────────────────────────────────────
                          СЕКЦИЯ: ТЕМА ОФОРМЛЕНИЯ
                     ──────────────────────────────────────── -->
                     <TextBlock Text="ТЕМА ОФОРМЛЕНИЯ"
                                Foreground="{StaticResource TextSecondaryBrush}"
                                FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
-                               Margin="0,28,0,14"/>
+                               Margin="0,0,0,14"/>
 
                     <StackPanel Orientation="Horizontal">
                         <!-- Тёмная — активная -->

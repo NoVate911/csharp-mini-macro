@@ -40,26 +40,11 @@ namespace MiniMacro
             Close();
         }
 
-        private void RepeatSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (RepeatValueText == null) return;
-            int value = (int)e.NewValue;
-            RepeatValueText.Text = value == 1 ? "1 раз" : $"{value} раза";
-        }
-
-        private void SpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (SpeedValueText == null) return;
-            SpeedValueText.Text = $"{e.NewValue:F1}×";
-        }
-
         // ── Загрузка настроек в UI ───────────────────────────────────────────
 
         private void LoadSettings()
         {
             var s = SettingsManager.Current;
-            RepeatSlider.Value = s.RepeatCount;
-            SpeedSlider.Value  = s.PlaybackSpeed;
             SetHotkeyText(HkRecordText, s.HotkeyRecord);
             SetHotkeyText(HkPlayText,   s.HotkeyPlay);
             SetHotkeyText(HkPauseText,  s.HotkeyPause);
@@ -156,9 +141,6 @@ namespace MiniMacro
         private void Apply_Click(object sender, RoutedEventArgs e)
         {
             CancelCapture();
-            var s = SettingsManager.Current;
-            s.RepeatCount   = (int)RepeatSlider.Value;
-            s.PlaybackSpeed = SpeedSlider.Value;
             SettingsManager.Save();
             HotkeyManager.UnregisterAll();
             HotkeyManager.RegisterAll();
