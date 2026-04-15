@@ -29,22 +29,29 @@ namespace MiniMacroInstaller
             {
                 InstallDirText.Text = _installDir;
             }
+
+            // Показываем чекбокс удаления макросов только если папка библиотеки задана
+            var libraryFolder = UninstallHelper.GetLibraryFolder();
+            if (!string.IsNullOrEmpty(libraryFolder))
+                DeleteMacrosCheck.Visibility = Visibility.Visible;
         }
 
         private async void Uninstall_Click(object sender, RoutedEventArgs e)
         {
+            bool deleteMacros = DeleteMacrosCheck.IsChecked == true;
+
             // Переключаемся в режим прогресса
-            ConfirmPanel.Visibility  = Visibility.Collapsed;
-            ProgressPanel.Visibility = Visibility.Visible;
-            CancelButton.IsEnabled   = false;
+            ConfirmPanel.Visibility   = Visibility.Collapsed;
+            ProgressPanel.Visibility  = Visibility.Visible;
+            CancelButton.IsEnabled    = false;
             UninstallButton.IsEnabled = false;
-            UninstallButtonText.Text = "Удаление...";
+            UninstallButtonText.Text  = "Удаление...";
 
             try
             {
                 await Task.Run(() =>
                 {
-                    UninstallHelper.Uninstall(_installDir, msg =>
+                    UninstallHelper.Uninstall(_installDir, deleteMacros, msg =>
                     {
                         Dispatcher.Invoke(() =>
                         {

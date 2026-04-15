@@ -157,8 +157,10 @@ namespace MiniMacro
                 var msg = (int)wParam;
                 var ts  = _sw.ElapsedMilliseconds;
 
-                double normX = ms.pt.x / SystemParameters.PrimaryScreenWidth;
-                double normY = ms.pt.y / SystemParameters.PrimaryScreenHeight;
+                // Нормализуем относительно всего виртуального рабочего стола
+                // (объединение всех мониторов), чтобы корректно работать при мульти-мониторной конфигурации
+                double normX = (ms.pt.x - SystemParameters.VirtualScreenLeft) / SystemParameters.VirtualScreenWidth;
+                double normY = (ms.pt.y - SystemParameters.VirtualScreenTop)  / SystemParameters.VirtualScreenHeight;
 
                 switch (msg)
                 {

@@ -70,7 +70,7 @@
             <!-- ══════════════════════════════════════════════
                  ОСНОВНОЙ КОНТЕНТ
             ══════════════════════════════════════════════ -->
-            <Grid Grid.Row="1">
+            <Grid x:Name="ContentArea" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="180"/>  <!-- Сайдбар -->
                     <ColumnDefinition Width="1"/>    <!-- Разделитель -->
@@ -287,21 +287,21 @@
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center">
 
-                            <!-- Запись (круг встроен в шаблон стиля) -->
-                            <Button x:Name="RecordButton"
-                                    Style="{StaticResource RecordButtonStyle}"
-                                    Margin="0,0,14,0" ToolTip="Начать запись"
-                                    Click="Record_Click"/>
-
-                            <!-- Воспроизведение -->
+                            <!-- Воспроизведение (основное действие — стоит первым) -->
                             <Button x:Name="PlayButton"
                                     Style="{StaticResource TransportButtonStyle}"
-                                    Margin="0,0,6,0" ToolTip="Воспроизвести"
+                                    Margin="0,0,14,0" ToolTip="Воспроизвести"
                                     Click="Play_Click">
                                 <!-- Треугольник (play) -->
                                 <Path Data="M 5,3 L 14,8 L 5,13 Z"
                                       Fill="{StaticResource AccentBrush}"/>
                             </Button>
+
+                            <!-- Запись (круг встроен в шаблон стиля) -->
+                            <Button x:Name="RecordButton"
+                                    Style="{StaticResource RecordButtonStyle}"
+                                    Margin="0,0,6,0" ToolTip="Начать запись"
+                                    Click="Record_Click"/>
 
                             <!-- Пауза -->
                             <Button x:Name="PauseButton"

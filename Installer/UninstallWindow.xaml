@@ -120,10 +120,16 @@
                         </StackPanel>
                     </Border>
 
-                    <TextBlock Text="Будут удалены: программа, ярлыки и запись в реестре."
+                    <TextBlock Text="Будут удалены: программа, ярлыки, настройки и запись в реестре."
                                Foreground="{StaticResource TextSecondaryBrush}"
                                FontFamily="Segoe UI" FontSize="11"
-                               Margin="0,12,0,0"/>
+                               Margin="0,12,0,12"/>
+
+                    <CheckBox x:Name="DeleteMacrosCheck"
+                              Content="Удалить все макросы из библиотеки"
+                              Foreground="{StaticResource TextPrimaryBrush}"
+                              FontFamily="Segoe UI" FontSize="12"
+                              Visibility="Collapsed"/>
                 </StackPanel>
 
                 <!-- Панель прогресса (видна во время удаления) -->

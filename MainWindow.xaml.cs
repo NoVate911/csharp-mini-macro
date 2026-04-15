@@ -264,7 +264,10 @@ namespace MiniMacro
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // Блокируем интерфейс до завершения проверки обновлений
+            ContentArea.IsEnabled = false;
             var result = await UpdateChecker.CheckAsync();
+            ContentArea.IsEnabled = true;
 
             if (result.CheckFailed)
             {

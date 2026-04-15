@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
 namespace MiniMacroInstaller.Helpers
@@ -17,11 +18,52 @@ namespace MiniMacroInstaller.Helpers
             return key?.GetValue("InstallLocation") as string;
         }
 
-        // Полное удаление программы. После вызова запустить ScheduleSelfDelete().
-        internal static void Uninstall(string installDir, Action<string> log)
+        // Читает путь к папке библиотеки макросов из файла настроек приложения
+        internal static string? GetLibraryFolder()
         {
-            // 1. Удалить основной exe
-            TryDelete(Path.Combine(installDir, "MiniMacro.exe"), "Удаление MiniMacro.exe", log);
+            try
+            {
+                var settingsPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "MiniMacro", "settings.json");
+
+                if (!File.Exists(settingsPath)) return null;
+
+                var json  = File.ReadAllText(settingsPath);
+                var match = Regex.Match(json, "\"LibraryFolder\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"");
+                if (!match.Success) return null;
+
+                var folder = match.Groups[1].Value.Replace("\\\\", "\\");
+                return string.IsNullOrWhiteSpace(folder) ? null : folder;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        // Полное удаление программы. После вызова вызвать ScheduleSelfDelete().
+        internal static void Uninstall(string installDir, bool deleteMacros, Action<string> log)
+        {
+            // 1. Удалить все файлы из папки установки (кроме uninstall.exe — он удаляется батником)
+            log("Удаление файлов программы...");
+            try
+            {
+                foreach (var file in Directory.GetFiles(installDir))
+                {
+                    var name = Path.GetFileName(file);
+                    if (name.Equals("uninstall.exe", StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    TryDelete(file, $"  {name}", log);
+                }
+                // Подпапки (например, runtimes/ для net10)
+                foreach (var dir in Directory.GetDirectories(installDir))
+                    TryDeleteDir(dir, $"  {Path.GetFileName(dir)}/", log);
+            }
+            catch (Exception ex)
+            {
+                log($"  ! {ex.Message}");
+            }
 
             // 2. Ярлык на рабочем столе
             var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
@@ -33,7 +75,21 @@ namespace MiniMacroInstaller.Helpers
                 "Mini Macro");
             TryDeleteDir(startMenuFolder, "Удаление папки меню Пуск", log);
 
-            // 4. Реестровый ключ
+            // 4. Папка настроек AppData
+            var appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "MiniMacro");
+            TryDeleteDir(appDataPath, "Удаление данных приложения (AppData)", log);
+
+            // 5. Макросы из библиотеки (если пользователь выбрал)
+            if (deleteMacros)
+            {
+                var libraryFolder = GetLibraryFolder();
+                if (!string.IsNullOrEmpty(libraryFolder) && Directory.Exists(libraryFolder))
+                    TryDeleteDir(libraryFolder!, "Удаление папки макросов", log);
+            }
+
+            // 6. Реестровый ключ
             log("Удаление записи из реестра...");
             try
             {
@@ -47,7 +103,7 @@ namespace MiniMacroInstaller.Helpers
             log("✓ Удаление завершено.");
         }
 
-        // Создаёт временный bat-файл, который удаляет uninstall.exe и папку установки
+        // Создаёт временный bat-файл, который удаляет uninstall.exe и всю папку установки
         // после закрытия деинсталлятора (через 2 секунды).
         internal static void ScheduleSelfDelete(string installDir)
         {
@@ -58,7 +114,7 @@ namespace MiniMacroInstaller.Helpers
                 "@echo off",
                 "timeout /t 2 /nobreak >nul",
                 $"del /f /q \"{uninstallExe}\"",
-                $"rmdir /q \"{installDir}\" 2>nul",
+                $"rmdir /s /q \"{installDir}\" 2>nul",
                 $"del \"%~f0\""
             );
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MiniMacro
 {
@@ -12,6 +13,9 @@ namespace MiniMacro
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+        [DllImport("user32.dll")]
+        private static extern bool GetCursorPos(out POINT lpPoint);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct INPUT
@@ -47,6 +51,9 @@ namespace MiniMacro
             public IntPtr dwExtraInfo;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct POINT { public int X; public int Y; }
+
         private const uint INPUT_MOUSE    = 0;
         private const uint INPUT_KEYBOARD = 1;
 
@@ -62,11 +69,22 @@ namespace MiniMacro
         private const uint MOUSEEVENTF_MIDDLEUP    = 0x0040;
         private const uint MOUSEEVENTF_WHEEL       = 0x0800;
         private const uint MOUSEEVENTF_ABSOLUTE    = 0x8000;
+        // Флаг: координаты отображаются на весь виртуальный рабочий стол (все мониторы)
+        private const uint MOUSEEVENTF_VIRTUALDESK = 0x4000;
+
+        // Порог рывка мыши: если курсор отклонился от последней позиции макроса
+        // более чем на JerkThresholdPx пикселей — считаем это намеренным движением и останавливаем
+        private const int JerkThresholdPx = 150;
 
         // ── Поля ─────────────────────────────────────────────────────────────
 
-        private ManualResetEventSlim   _pauseEvent = new ManualResetEventSlim(true);
+        private ManualResetEventSlim    _pauseEvent = new ManualResetEventSlim(true);
         private CancellationTokenSource? _cts;
+
+        // Последняя позиция мыши, выставленная макросом (в экранных пикселях виртуального стола)
+        // int.MinValue = мышь ещё не перемещалась макросом
+        private volatile int _lastSentX = int.MinValue;
+        private volatile int _lastSentY = int.MinValue;
 
         public event Action? PlaybackCompleted;
 
@@ -77,9 +95,14 @@ namespace MiniMacro
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
             _pauseEvent.Set();
+            _lastSentX = int.MinValue;
+            _lastSentY = int.MinValue;
 
             return Task.Run(async () =>
             {
+                // Запускаем мониторинг рывка параллельно с воспроизведением
+                var jerkTask = MonitorJerkAsync(token);
+
                 try
                 {
                     for (int rep = 0; rep < repeatCount && !token.IsCancellationRequested; rep++)
@@ -102,6 +125,7 @@ namespace MiniMacro
                 catch (OperationCanceledException) { }
                 finally
                 {
+                    await jerkTask;
                     PlaybackCompleted?.Invoke();
                 }
             }, token);
@@ -116,9 +140,37 @@ namespace MiniMacro
             _pauseEvent.Set(); // разблокировать ожидание паузы
         }
 
+        // ── Обнаружение рывка мыши ───────────────────────────────────────────
+
+        private async Task MonitorJerkAsync(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                try { await Task.Delay(35, token); }
+                catch (OperationCanceledException) { return; }
+
+                int expectedX = _lastSentX;
+                int expectedY = _lastSentY;
+
+                // Нет мышиных событий ещё или воспроизведение приостановлено — не проверяем
+                if (expectedX == int.MinValue || !_pauseEvent.IsSet) continue;
+
+                if (!GetCursorPos(out POINT actual)) continue;
+
+                long dx = actual.X - expectedX;
+                long dy = actual.Y - expectedY;
+                if (dx * dx + dy * dy > (long)JerkThresholdPx * JerkThresholdPx)
+                {
+                    // Пользователь резко сдвинул мышь — останавливаем макрос
+                    _cts?.Cancel();
+                    return;
+                }
+            }
+        }
+
         // ── Отправка событий ─────────────────────────────────────────────────
 
-        private static void SendAction(MacroAction action)
+        private void SendAction(MacroAction action)
         {
             switch (action.Type)
             {
@@ -151,16 +203,20 @@ namespace MiniMacro
             SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
         }
 
-        private static void SendMouseMove(double normX, double normY)
+        private void SendMouseMove(double normX, double normY)
         {
+            var (absX, absY) = ToVirtualDesktopCoords(normX, normY);
+
             var input = new INPUT { type = INPUT_MOUSE };
-            input.u.mi.dx      = (int)(normX * 65535);
-            input.u.mi.dy      = (int)(normY * 65535);
-            input.u.mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
+            input.u.mi.dx      = absX;
+            input.u.mi.dy      = absY;
+            input.u.mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
             SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+
+            UpdateLastSent(normX, normY);
         }
 
-        private static void SendMouseButton(string? button, bool down, double normX, double normY)
+        private void SendMouseButton(string? button, bool down, double normX, double normY)
         {
             uint flags = button switch
             {
@@ -169,16 +225,20 @@ namespace MiniMacro
                 _        => down ? MOUSEEVENTF_LEFTDOWN   : MOUSEEVENTF_LEFTUP
             };
 
+            var (absX, absY) = ToVirtualDesktopCoords(normX, normY);
+
             // Переместить в нужную позицию + нажать
             var move  = new INPUT { type = INPUT_MOUSE };
-            move.u.mi.dx      = (int)(normX * 65535);
-            move.u.mi.dy      = (int)(normY * 65535);
-            move.u.mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
+            move.u.mi.dx      = absX;
+            move.u.mi.dy      = absY;
+            move.u.mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_VIRTUALDESK | MOUSEEVENTF_MOVE;
 
             var click = new INPUT { type = INPUT_MOUSE };
             click.u.mi.dwFlags = flags;
 
             SendInput(2, new[] { move, click }, Marshal.SizeOf<INPUT>());
+
+            UpdateLastSent(normX, normY);
         }
 
         private static void SendWheel(int delta)
@@ -187,6 +247,25 @@ namespace MiniMacro
             input.u.mi.mouseData = (uint)delta;
             input.u.mi.dwFlags   = MOUSEEVENTF_WHEEL;
             SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+        }
+
+        // ── Вспомогательные методы ───────────────────────────────────────────
+
+        // Переводит нормализованные координаты (0..1 от виртуального стола) в
+        // абсолютные координаты SendInput (0..65535), пригодные для MOUSEEVENTF_VIRTUALDESK
+        private static (int absX, int absY) ToVirtualDesktopCoords(double normX, double normY)
+        {
+            int absX = (int)(normX * 65535);
+            int absY = (int)(normY * 65535);
+            return (absX, absY);
+        }
+
+        // Запоминаем физическую позицию последнего посланного мышиного события
+        // для обнаружения рывка пользователя
+        private void UpdateLastSent(double normX, double normY)
+        {
+            _lastSentX = (int)(normX * SystemParameters.VirtualScreenWidth  + SystemParameters.VirtualScreenLeft);
+            _lastSentY = (int)(normY * SystemParameters.VirtualScreenHeight + SystemParameters.VirtualScreenTop);
         }
     }
 }
