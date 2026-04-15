@@ -287,10 +287,10 @@
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center">
 
-                            <!-- Воспроизведение (основное действие — стоит первым) -->
+                            <!-- Воспроизведение -->
                             <Button x:Name="PlayButton"
                                     Style="{StaticResource TransportButtonStyle}"
-                                    Margin="0,0,14,0" ToolTip="Воспроизвести"
+                                    Margin="0,0,6,0" ToolTip="Воспроизвести"
                                     Click="Play_Click">
                                 <!-- Треугольник (play) -->
                                 <Path Data="M 5,3 L 14,8 L 5,13 Z"
@@ -300,7 +300,7 @@
                             <!-- Запись (круг встроен в шаблон стиля) -->
                             <Button x:Name="RecordButton"
                                     Style="{StaticResource RecordButtonStyle}"
-                                    Margin="0,0,6,0" ToolTip="Начать запись"
+                                    Margin="0,0,14,0" ToolTip="Начать запись"
                                     Click="Record_Click"/>
 
                             <!-- Пауза -->
