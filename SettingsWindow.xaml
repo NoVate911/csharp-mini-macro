@@ -7,11 +7,11 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="False"
-        Background="{StaticResource BgBrush}"
+        Background="{DynamicResource BgBrush}"
         WindowStartupLocation="CenterScreen"
         Icon="logo.ico">
 
-    <Border BorderBrush="{StaticResource AppBorderBrush}" BorderThickness="1">
+    <Border BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>  <!-- Заголовок -->
@@ -25,7 +25,7 @@
                  ЗАГОЛОВОК
             ══════════════════════════════════════════════ -->
             <Grid Grid.Row="0"
-                  Background="{StaticResource SidebarBrush}"
+                  Background="{DynamicResource SidebarBrush}"
                   MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -41,14 +41,14 @@
                                     M 0,8 L 2,8 M 14,8 L 16,8
                                     M 2.34,2.34 L 3.75,3.75 M 12.25,12.25 L 13.66,13.66
                                     M 13.66,2.34 L 12.25,3.75 M 3.75,12.25 L 2.34,13.66"
-                              Stroke="{StaticResource TextSecondaryBrush}"
+                              Stroke="{DynamicResource TextSecondaryBrush}"
                               StrokeThickness="1.5"
                               StrokeStartLineCap="Round"
                               StrokeEndLineCap="Round"
                               Fill="Transparent"/>
                     </Viewbox>
                     <TextBlock Text="Настройки"
-                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
                                FontFamily="Segoe UI" FontSize="12" FontWeight="Medium"
                                VerticalAlignment="Center"/>
                 </StackPanel>
@@ -57,14 +57,14 @@
                         Style="{StaticResource CloseButtonStyle}"
                         Click="Close_Click" ToolTip="Закрыть">
                     <Path Data="M 4.5,4.5 L 11.5,11.5 M 11.5,4.5 L 4.5,11.5"
-                          Stroke="{StaticResource TextSecondaryBrush}"
+                          Stroke="{DynamicResource TextSecondaryBrush}"
                           StrokeThickness="1.5"
                           StrokeStartLineCap="Round"
                           StrokeEndLineCap="Round"/>
                 </Button>
             </Grid>
 
-            <Rectangle Grid.Row="1" Fill="{StaticResource DividerBrush}"/>
+            <Rectangle Grid.Row="1" Fill="{DynamicResource DividerBrush}"/>
 
             <!-- ══════════════════════════════════════════════
                  КОНТЕНТ
@@ -78,48 +78,41 @@
                          СЕКЦИЯ: ТЕМА ОФОРМЛЕНИЯ
                     ──────────────────────────────────────── -->
                     <TextBlock Text="ТЕМА ОФОРМЛЕНИЯ"
-                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
                                FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
                                Margin="0,0,0,14"/>
 
                     <StackPanel Orientation="Horizontal">
-                        <!-- Тёмная — активная -->
-                        <Button Style="{StaticResource ThemeButtonActiveStyle}"
+                        <!-- Тёмная -->
+                        <Button x:Name="DarkButton"
+                                Style="{StaticResource ThemeButtonStyle}"
+                                Click="DarkTheme_Click"
                                 ToolTip="Тёмная тема">
-                            <TextBlock Text="Тёмная"
-                                       FontFamily="Segoe UI" FontSize="12"
-                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Тёмная" FontFamily="Segoe UI" FontSize="12"/>
                         </Button>
-                        <!-- Светлая — неактивная -->
-                        <Button Style="{StaticResource ThemeButtonStyle}"
+                        <!-- Светлая -->
+                        <Button x:Name="LightButton"
+                                Style="{StaticResource ThemeButtonStyle}"
                                 Margin="6,0,0,0"
-                                IsEnabled="False"
-                                ToolTip="Будет доступно в следующих версиях">
-                            <TextBlock Text="Светлая"
-                                       FontFamily="Segoe UI" FontSize="12"
-                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                                Click="LightTheme_Click"
+                                ToolTip="Светлая тема">
+                            <TextBlock Text="Светлая" FontFamily="Segoe UI" FontSize="12"/>
                         </Button>
-                        <!-- Системная — неактивная -->
-                        <Button Style="{StaticResource ThemeButtonStyle}"
+                        <!-- Системная -->
+                        <Button x:Name="SystemButton"
+                                Style="{StaticResource ThemeButtonStyle}"
                                 Margin="6,0,0,0"
-                                IsEnabled="False"
-                                ToolTip="Будет доступно в следующих версиях">
-                            <TextBlock Text="Системная"
-                                       FontFamily="Segoe UI" FontSize="12"
-                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+                                Click="SystemTheme_Click"
+                                ToolTip="Следовать теме Windows">
+                            <TextBlock Text="Системная" FontFamily="Segoe UI" FontSize="12"/>
                         </Button>
                     </StackPanel>
-
-                    <TextBlock Text="Светлая и системная тема будут доступны в следующих версиях"
-                               Foreground="{StaticResource TextSecondaryBrush}"
-                               FontFamily="Segoe UI" FontSize="11" FontStyle="Italic"
-                               Margin="0,8,0,0"/>
 
                     <!-- ────────────────────────────────────────
                          СЕКЦИЯ: ГОРЯЧИЕ КЛАВИШИ
                     ──────────────────────────────────────── -->
                     <TextBlock Text="ГОРЯЧИЕ КЛАВИШИ"
-                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
                                FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
                                Margin="0,28,0,14"/>
 
@@ -133,11 +126,11 @@
                         <Viewbox Grid.Column="0" Width="16" Height="16"
                                  Margin="0,0,10,0" VerticalAlignment="Center">
                             <Ellipse Width="12" Height="12"
-                                     Fill="{StaticResource RecordBrush}"/>
+                                     Fill="{DynamicResource RecordBrush}"/>
                         </Viewbox>
                         <TextBlock Grid.Column="1"
                                    Text="Запись"
-                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    FontFamily="Segoe UI" FontSize="13"
                                    VerticalAlignment="Center"/>
                         <Button x:Name="HkRecord"
@@ -147,7 +140,7 @@
                                 ToolTip="Нажмите, чтобы назначить горячую клавишу">
                             <TextBlock x:Name="HkRecordText"
                                        Text="—"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="12"/>
                         </Button>
                     </Grid>
@@ -162,11 +155,11 @@
                         <Viewbox Grid.Column="0" Width="16" Height="16"
                                  Margin="0,0,10,0" VerticalAlignment="Center">
                             <Path Data="M 3,2 L 14,8 L 3,14 Z"
-                                  Fill="{StaticResource AccentBrush}"/>
+                                  Fill="{DynamicResource AccentBrush}"/>
                         </Viewbox>
                         <TextBlock Grid.Column="1"
                                    Text="Воспроизведение"
-                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    FontFamily="Segoe UI" FontSize="13"
                                    VerticalAlignment="Center"/>
                         <Button x:Name="HkPlay"
@@ -176,7 +169,7 @@
                                 ToolTip="Нажмите, чтобы назначить горячую клавишу">
                             <TextBlock x:Name="HkPlayText"
                                        Text="—"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="12"/>
                         </Button>
                     </Grid>
@@ -192,11 +185,11 @@
                                  Margin="0,0,10,0" VerticalAlignment="Center">
                             <Path Data="M 3,2 L 6,2 L 6,14 L 3,14 Z
                                         M 10,2 L 13,2 L 13,14 L 10,14 Z"
-                                  Fill="{StaticResource TextPrimaryBrush}"/>
+                                  Fill="{DynamicResource TextPrimaryBrush}"/>
                         </Viewbox>
                         <TextBlock Grid.Column="1"
                                    Text="Пауза"
-                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    FontFamily="Segoe UI" FontSize="13"
                                    VerticalAlignment="Center"/>
                         <Button x:Name="HkPause"
@@ -206,7 +199,7 @@
                                 ToolTip="Нажмите, чтобы назначить горячую клавишу">
                             <TextBlock x:Name="HkPauseText"
                                        Text="—"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="12"/>
                         </Button>
                     </Grid>
@@ -221,11 +214,11 @@
                         <Viewbox Grid.Column="0" Width="16" Height="16"
                                  Margin="0,0,10,0" VerticalAlignment="Center">
                             <Rectangle Width="10" Height="10"
-                                       Fill="{StaticResource TextPrimaryBrush}"/>
+                                       Fill="{DynamicResource TextPrimaryBrush}"/>
                         </Viewbox>
                         <TextBlock Grid.Column="1"
                                    Text="Стоп"
-                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    FontFamily="Segoe UI" FontSize="13"
                                    VerticalAlignment="Center"/>
                         <Button x:Name="HkStop"
@@ -235,7 +228,7 @@
                                 ToolTip="Нажмите, чтобы назначить горячую клавишу">
                             <TextBlock x:Name="HkStopText"
                                        Text="—"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="12"/>
                         </Button>
                     </Grid>
@@ -243,7 +236,7 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <Rectangle Grid.Row="3" Fill="{StaticResource DividerBrush}"/>
+            <Rectangle Grid.Row="3" Fill="{DynamicResource DividerBrush}"/>
 
             <!-- ══════════════════════════════════════════════
                  ФУТЕР
@@ -257,7 +250,7 @@
                             Click="Reset_Click"
                             ToolTip="Сбросить настройки до значений по умолчанию">
                         <TextBlock Text="Сбросить"
-                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
                                    FontFamily="Segoe UI" FontSize="12"/>
                     </Button>
                     <Button Style="{StaticResource ActionButtonAccentStyle}"

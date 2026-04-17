@@ -9,6 +9,7 @@ namespace MiniMacro
         protected override void OnStartup(StartupEventArgs e)
         {
             SettingsManager.Load();
+            ThemeManager.Apply(SettingsManager.Current.Theme);
             base.OnStartup(e);
         }
     }

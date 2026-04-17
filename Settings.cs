@@ -6,7 +6,7 @@ namespace MiniMacro
     {
         public int    RepeatCount   { get; set; } = 1;
         public double PlaybackSpeed { get; set; } = 1.0;
-        public string Theme         { get; set; } = "Dark";
+        public string Theme         { get; set; } = "System";
 
         // Глобальные горячие клавиши приложения
         public string HotkeyRecord  { get; set; } = "";

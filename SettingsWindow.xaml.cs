@@ -49,10 +49,48 @@ namespace MiniMacro
             SetHotkeyText(HkPlayText,   s.HotkeyPlay);
             SetHotkeyText(HkPauseText,  s.HotkeyPause);
             SetHotkeyText(HkStopText,   s.HotkeyStop);
+            UpdateThemeButtons();
         }
 
         private static void SetHotkeyText(TextBlock tb, string hotkey) =>
             tb.Text = string.IsNullOrEmpty(hotkey) ? "—" : hotkey;
+
+        // ── Тема оформления ──────────────────────────────────────────────────
+
+        private void UpdateThemeButtons()
+        {
+            var active   = (Style)FindResource("ThemeButtonActiveStyle");
+            var inactive = (Style)FindResource("ThemeButtonStyle");
+            var theme    = SettingsManager.Current.Theme;
+
+            DarkButton.Style   = theme == "Dark"   ? active : inactive;
+            LightButton.Style  = theme == "Light"  ? active : inactive;
+            SystemButton.Style = theme == "System" ? active : inactive;
+        }
+
+        private void DarkTheme_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Current.Theme = "Dark";
+            SettingsManager.Save();
+            ThemeManager.Apply("Dark");
+            UpdateThemeButtons();
+        }
+
+        private void LightTheme_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Current.Theme = "Light";
+            SettingsManager.Save();
+            ThemeManager.Apply("Light");
+            UpdateThemeButtons();
+        }
+
+        private void SystemTheme_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.Current.Theme = "System";
+            SettingsManager.Save();
+            ThemeManager.Apply("System");
+            UpdateThemeButtons();
+        }
 
         // ── Захват горячей клавиши ───────────────────────────────────────────
 
@@ -152,6 +190,7 @@ namespace MiniMacro
             CancelCapture();
             SettingsManager.Reset();
             SettingsManager.Save();
+            ThemeManager.Apply(SettingsManager.Current.Theme);
             LoadSettings();
             HotkeyManager.UnregisterAll();
             HotkeyManager.RegisterAll();

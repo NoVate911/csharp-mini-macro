@@ -12,12 +12,12 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="False"
-        Background="{StaticResource BgBrush}"
+        Background="{DynamicResource BgBrush}"
         WindowStartupLocation="CenterScreen"
         Icon="logo.ico">
 
     <!-- Внешняя рамка окна (1px бордер вместо системного chrome) -->
-    <Border BorderBrush="{StaticResource AppBorderBrush}" BorderThickness="1">
+    <Border BorderBrush="{DynamicResource AppBorderBrush}" BorderThickness="1">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>  <!-- Заголовок -->
@@ -28,7 +28,7 @@
                  ЗАГОЛОВОК ОКНА
             ══════════════════════════════════════════════ -->
             <Grid Grid.Row="0"
-                  Background="{StaticResource SidebarBrush}"
+                  Background="{DynamicResource SidebarBrush}"
                   MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -41,7 +41,7 @@
                     <Image Source="logo.ico" Width="16" Height="16" Margin="0,0,8,0"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock Text="Mini Macro"
-                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Foreground="{DynamicResource TextPrimaryBrush}"
                                FontFamily="Segoe UI" FontSize="12" FontWeight="Medium"
                                VerticalAlignment="Center"/>
                 </StackPanel>
@@ -52,7 +52,7 @@
                             Click="Minimize_Click" ToolTip="Свернуть">
                         <!-- Иконка: горизонтальная черта -->
                         <Path Data="M 5,8 L 11,8"
-                              Stroke="{StaticResource TextSecondaryBrush}"
+                              Stroke="{DynamicResource TextSecondaryBrush}"
                               StrokeThickness="1.5"
                               StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                     </Button>
@@ -60,7 +60,7 @@
                             Click="Close_Click" ToolTip="Закрыть">
                         <!-- Иконка: крестик -->
                         <Path Data="M 4.5,4.5 L 11.5,11.5 M 11.5,4.5 L 4.5,11.5"
-                              Stroke="{StaticResource TextSecondaryBrush}"
+                              Stroke="{DynamicResource TextSecondaryBrush}"
                               StrokeThickness="1.5"
                               StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                     </Button>
@@ -80,7 +80,7 @@
                 <!-- ────────────────────────────────────────
                      САЙДБАР
                 ──────────────────────────────────────── -->
-                <Grid Grid.Column="0" Background="{StaticResource SidebarBrush}">
+                <Grid Grid.Column="0" Background="{DynamicResource SidebarBrush}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>   <!-- Навигация -->
                         <RowDefinition Height="Auto"/> <!-- Футер -->
@@ -143,16 +143,16 @@
 
                         <!-- Параметры воспроизведения -->
                         <Rectangle Height="1"
-                                   Fill="{StaticResource DividerBrush}"
+                                   Fill="{DynamicResource DividerBrush}"
                                    Margin="12,0,12,10"/>
 
                         <DockPanel Margin="16,0,16,2">
                             <TextBlock Text="ПОВТОРЫ"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
                                        VerticalAlignment="Center" DockPanel.Dock="Left"/>
                             <TextBlock x:Name="SideRepeatText"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="10"
                                        HorizontalAlignment="Right"/>
                         </DockPanel>
@@ -165,11 +165,11 @@
 
                         <DockPanel Margin="16,0,16,2">
                             <TextBlock Text="СКОРОСТЬ"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="10" FontWeight="SemiBold"
                                        VerticalAlignment="Center" DockPanel.Dock="Left"/>
                             <TextBlock x:Name="SideSpeedText"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="10"
                                        HorizontalAlignment="Right"/>
                         </DockPanel>
@@ -181,21 +181,21 @@
 
                         <!-- Статус обновления (показывается только при отсутствии сети) -->
                         <TextBlock x:Name="UpdateStatusText"
-                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                    FontFamily="Segoe UI" FontSize="10"
                                    TextWrapping="Wrap"
                                    Margin="16,0,16,8"
                                    Visibility="Collapsed"/>
 
                         <Rectangle Height="1"
-                                   Fill="{StaticResource DividerBrush}"
+                                   Fill="{DynamicResource DividerBrush}"
                                    Margin="12,0,12,12"/>
                         <TextBlock x:Name="VersionText"
-                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                    FontFamily="Segoe UI" FontSize="11"
                                    Margin="20,0,0,2"/>
                         <TextBlock x:Name="AuthorText"
-                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
                                    FontFamily="Segoe UI" FontSize="11"
                                    Margin="20,0,0,8"/>
 
@@ -243,7 +243,7 @@
                 </Grid>
 
                 <!-- Вертикальный разделитель -->
-                <Rectangle Grid.Column="1" Fill="{StaticResource DividerBrush}"/>
+                <Rectangle Grid.Column="1" Fill="{DynamicResource DividerBrush}"/>
 
                 <!-- ────────────────────────────────────────
                      РАБОЧАЯ ОБЛАСТЬ
@@ -262,14 +262,14 @@
                         <!-- Текущий макрос -->
                         <StackPanel HorizontalAlignment="Center" Margin="0,0,0,44">
                             <TextBlock Text="ТЕКУЩИЙ МАКРОС"
-                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
                                        FontFamily="Segoe UI" FontSize="10"
                                        FontWeight="SemiBold"
                                        HorizontalAlignment="Center"
                                        Margin="0,0,0,7"/>
                             <TextBlock x:Name="MacroNameText"
                                        Text="— не выбран —"
-                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       Foreground="{DynamicResource TextPrimaryBrush}"
                                        FontFamily="Segoe UI" FontSize="20"
                                        FontWeight="Light"
                                        HorizontalAlignment="Center"/>
@@ -277,15 +277,21 @@
 
                         <!-- Статус -->
                         <TextBlock x:Name="StatusText"
-                                   Foreground="{StaticResource AccentBrush}"
+                                   Foreground="{DynamicResource AccentBrush}"
                                    FontFamily="Segoe UI" FontSize="12"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,14"
                                    Visibility="Collapsed"/>
 
-                        <!-- Транспортные кнопки -->
+                        <!-- Транспортные кнопки: Запись, Воспроизведение, Пауза, Остановка -->
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center">
+
+                            <!-- Запись (круг встроен в шаблон стиля) -->
+                            <Button x:Name="RecordButton"
+                                    Style="{StaticResource RecordButtonStyle}"
+                                    Margin="0,0,14,0" ToolTip="Начать запись"
+                                    Click="Record_Click"/>
 
                             <!-- Воспроизведение -->
                             <Button x:Name="PlayButton"
@@ -294,14 +300,8 @@
                                     Click="Play_Click">
                                 <!-- Треугольник (play) -->
                                 <Path Data="M 5,3 L 14,8 L 5,13 Z"
-                                      Fill="{StaticResource AccentBrush}"/>
+                                      Fill="{DynamicResource AccentBrush}"/>
                             </Button>
-
-                            <!-- Запись (круг встроен в шаблон стиля) -->
-                            <Button x:Name="RecordButton"
-                                    Style="{StaticResource RecordButtonStyle}"
-                                    Margin="0,0,14,0" ToolTip="Начать запись"
-                                    Click="Record_Click"/>
 
                             <!-- Пауза -->
                             <Button x:Name="PauseButton"
@@ -311,7 +311,7 @@
                                 <!-- Две вертикальные полосы -->
                                 <Path Data="M 4,3 L 7,3 L 7,13 L 4,13 Z
                                             M 9,3 L 12,3 L 12,13 L 9,13 Z"
-                                      Fill="{StaticResource TextPrimaryBrush}"/>
+                                      Fill="{DynamicResource TextPrimaryBrush}"/>
                             </Button>
 
                             <!-- Стоп -->
@@ -321,14 +321,14 @@
                                     Click="Stop_Click">
                                 <!-- Квадрат (stop) -->
                                 <Rectangle Width="13" Height="13"
-                                           Fill="{StaticResource TextPrimaryBrush}"/>
+                                           Fill="{DynamicResource TextPrimaryBrush}"/>
                             </Button>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Нижняя панель -->
                     <Border Grid.Row="1"
-                            BorderBrush="{StaticResource DividerBrush}"
+                            BorderBrush="{DynamicResource DividerBrush}"
                             BorderThickness="0,1,0,0"
                             Padding="20,14">
                         <StackPanel Orientation="Horizontal"
@@ -345,7 +345,7 @@
                                         <!-- Иконка: стрелка вверх (открыть) -->
                                         <Path Data="M 8,11 L 8,2 M 4,6 L 8,2 L 12,6
                                                     M 2,13 L 14,13"
-                                              Stroke="{StaticResource TextPrimaryBrush}"
+                                              Stroke="{DynamicResource TextPrimaryBrush}"
                                               StrokeThickness="1.5"
                                               StrokeLineJoin="Round"
                                               StrokeStartLineCap="Round"
@@ -353,7 +353,7 @@
                                               Fill="Transparent"/>
                                     </Viewbox>
                                     <TextBlock Text="Загрузить"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               Foreground="{DynamicResource TextPrimaryBrush}"
                                                FontFamily="Segoe UI" FontSize="12"
                                                VerticalAlignment="Center"/>
                                 </StackPanel>
