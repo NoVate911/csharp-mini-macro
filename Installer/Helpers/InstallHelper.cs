@@ -133,7 +133,7 @@ namespace MiniMacroInstaller.Helpers
             if (key == null) return;
 
             key.SetValue("DisplayName",     "Mini Macro");
-            key.SetValue("DisplayVersion",  "0.1.0");
+            key.SetValue("DisplayVersion",  "0.4.1");
             key.SetValue("Publisher",       "NoVate Source");
             key.SetValue("InstallLocation", installDir);
             key.SetValue("UninstallString", $"\"{uninstallExe}\" --uninstall");
