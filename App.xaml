@@ -4,23 +4,11 @@
              xmlns:local="clr-namespace:MiniMacro"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
-        <!-- ╔══════════════════════════════════════════════╗
-             ║  ЦВЕТА                                       ║
-             ╚══════════════════════════════════════════════╝ -->
-        <SolidColorBrush x:Key="BgBrush"           Color="#1A1A1A"/>
-        <SolidColorBrush x:Key="SidebarBrush"      Color="#141414"/>
-        <SolidColorBrush x:Key="SurfaceBrush"      Color="#222222"/>
-        <SolidColorBrush x:Key="DividerBrush"      Color="#2A2A2A"/>
-        <SolidColorBrush x:Key="AppBorderBrush"    Color="#2E2E2E"/>
-        <SolidColorBrush x:Key="HoverBrush"        Color="#282828"/>
-        <SolidColorBrush x:Key="PressedBrush"      Color="#1E1E1E"/>
-        <SolidColorBrush x:Key="AccentBrush"       Color="#1ED895"/>
-        <SolidColorBrush x:Key="AccentDimBrush"    Color="#17A06E"/>
-        <SolidColorBrush x:Key="RecordBrush"       Color="#E04040"/>
-        <SolidColorBrush x:Key="RecordDimBrush"    Color="#AA2F2F"/>
-        <SolidColorBrush x:Key="TextPrimaryBrush"  Color="#F0F0F0"/>
-        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#606060"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Тема загружается при старте через ThemeManager.Apply() в App.xaml.cs -->
+                <ResourceDictionary Source="Themes/Dark.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
         <!-- ╔══════════════════════════════════════════════╗
              ║  КНОПКА ЗАГОЛОВКА (свернуть / закрыть)      ║
@@ -42,11 +30,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource HoverBrush}"/>
+                                        Value="{DynamicResource HoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -67,11 +55,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource RecordBrush}"/>
+                                        Value="{DynamicResource RecordBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource RecordDimBrush}"/>
+                                        Value="{DynamicResource RecordDimBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -85,7 +73,7 @@
         <Style x:Key="NavButtonStyle" TargetType="Button">
             <Setter Property="Height"                   Value="42"/>
             <Setter Property="Background"               Value="Transparent"/>
-            <Setter Property="Foreground"               Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Foreground"               Value="{DynamicResource TextSecondaryBrush}"/>
             <Setter Property="BorderThickness"          Value="0"/>
             <Setter Property="Cursor"                   Value="Hand"/>
             <Setter Property="FocusVisualStyle"         Value="{x:Null}"/>
@@ -97,7 +85,7 @@
                             <!-- Акцентная полоса слева -->
                             <Rectangle x:Name="AccentBar"
                                        Width="3" HorizontalAlignment="Left"
-                                       Fill="{StaticResource AccentBrush}"
+                                       Fill="{DynamicResource AccentBrush}"
                                        Opacity="0"/>
                             <Border x:Name="Bd"
                                     Background="{TemplateBinding Background}"
@@ -108,17 +96,17 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd"       Property="Background"
-                                        Value="{StaticResource HoverBrush}"/>
+                                        Value="{DynamicResource HoverBrush}"/>
                                 <Setter TargetName="AccentBar" Property="Opacity" Value="0.7"/>
                                 <Setter Property="Foreground"
-                                        Value="{StaticResource TextPrimaryBrush}"/>
+                                        Value="{DynamicResource TextPrimaryBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd"       Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                                 <Setter TargetName="AccentBar" Property="Opacity" Value="1"/>
                                 <Setter Property="Foreground"
-                                        Value="{StaticResource AccentBrush}"/>
+                                        Value="{DynamicResource AccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -138,7 +126,7 @@
         <Style x:Key="TransportButtonStyle" TargetType="Button">
             <Setter Property="Width"           Value="46"/>
             <Setter Property="Height"          Value="46"/>
-            <Setter Property="Background"      Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="Background"      Value="{DynamicResource SurfaceBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -157,13 +145,14 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <!-- Заметное осветление + тонкая рамка -->
-                                <Setter TargetName="Bd" Property="Background" Value="#303030"/>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SurfaceHoverBrush}"/>
                                 <Setter TargetName="Bd" Property="BorderBrush"
-                                        Value="{StaticResource AppBorderBrush}"/>
+                                        Value="{DynamicResource AppBorderBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                                 <Setter TargetName="Bd" Property="BorderBrush" Value="Transparent"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -174,13 +163,11 @@
 
         <!-- ╔══════════════════════════════════════════════╗
              ║  КНОПКА ЗАПИСИ (большая, с рамкой)          ║
-             ║  Круг встроен в шаблон — меняет цвет на     ║
-             ║  белый при hover, чтобы не сливаться        ║
              ╚══════════════════════════════════════════════╝ -->
         <Style x:Key="RecordButtonStyle" TargetType="Button">
             <Setter Property="Width"           Value="60"/>
             <Setter Property="Height"          Value="60"/>
-            <Setter Property="Background"      Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="Background"      Value="{DynamicResource SurfaceBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -191,24 +178,24 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="3"
                                 BorderThickness="2"
-                                BorderBrush="{StaticResource RecordBrush}">
+                                BorderBrush="{DynamicResource RecordBrush}">
                             <!-- Иконка: красный круг, становится белым на hover -->
                             <Ellipse x:Name="Dot"
                                      Width="22" Height="22"
-                                     Fill="{StaticResource RecordBrush}"/>
+                                     Fill="{DynamicResource RecordBrush}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd"  Property="Background"
-                                        Value="{StaticResource RecordBrush}"/>
+                                        Value="{DynamicResource RecordBrush}"/>
                                 <!-- Белый круг контрастирует с красным фоном -->
                                 <Setter TargetName="Dot" Property="Fill" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd"  Property="Background"
-                                        Value="{StaticResource RecordDimBrush}"/>
+                                        Value="{DynamicResource RecordDimBrush}"/>
                                 <Setter TargetName="Bd"  Property="BorderBrush"
-                                        Value="{StaticResource RecordDimBrush}"/>
+                                        Value="{DynamicResource RecordDimBrush}"/>
                                 <Setter TargetName="Dot" Property="Fill" Value="White"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -223,8 +210,8 @@
         <!-- Вторичная: Загрузить -->
         <Style x:Key="ActionButtonStyle" TargetType="Button">
             <Setter Property="Height"          Value="34"/>
-            <Setter Property="Background"      Value="{StaticResource SurfaceBrush}"/>
-            <Setter Property="Foreground"      Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="Background"      Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource TextPrimaryBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -242,11 +229,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource HoverBrush}"/>
+                                        Value="{DynamicResource HoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -257,7 +244,7 @@
         <!-- Акцентная: Сохранить -->
         <Style x:Key="ActionButtonAccentStyle" TargetType="Button">
             <Setter Property="Height"          Value="34"/>
-            <Setter Property="Background"      Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Background"      Value="{DynamicResource AccentBrush}"/>
             <Setter Property="Foreground"      Value="#141414"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor"          Value="Hand"/>
@@ -289,13 +276,12 @@
 
         <!-- ╔══════════════════════════════════════════════╗
              ║  ИКОНОЧНАЯ КНОПКА (нейтральная)             ║
-             ║  Используется для Load / Overwrite          ║
              ╚══════════════════════════════════════════════╝ -->
         <Style x:Key="IconButtonStyle" TargetType="Button">
             <Setter Property="Width"           Value="28"/>
             <Setter Property="Height"          Value="28"/>
             <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="Foreground"      Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource TextSecondaryBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -310,13 +296,14 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#303030"/>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SurfaceHoverBrush}"/>
                                 <Setter Property="Foreground"
-                                        Value="{StaticResource TextPrimaryBrush}"/>
+                                        Value="{DynamicResource TextPrimaryBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -341,15 +328,16 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <!-- Тёмно-красный фон, иконка краснеет -->
-                                <Setter TargetName="Bd" Property="Background" Value="#3A1515"/>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource IconDangerHoverBrush}"/>
                                 <Setter Property="Foreground"
-                                        Value="{StaticResource RecordBrush}"/>
+                                        Value="{DynamicResource RecordBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#2A0F0F"/>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource IconDangerPressedBrush}"/>
                                 <Setter Property="Foreground"
-                                        Value="{StaticResource RecordDimBrush}"/>
+                                        Value="{DynamicResource RecordDimBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -359,16 +347,14 @@
 
         <!-- ╔══════════════════════════════════════════════╗
              ║  ПОЛЕ ПОИСКА                                 ║
-             ║  Иконка лупы встроена в шаблон — гарантирует║
-             ║  одинаковое смещение у placeholder и текста ║
              ╚══════════════════════════════════════════════╝ -->
         <Style x:Key="SearchBoxStyle" TargetType="TextBox">
-            <Setter Property="Background"       Value="{StaticResource SurfaceBrush}"/>
-            <Setter Property="Foreground"       Value="{StaticResource TextPrimaryBrush}"/>
-            <Setter Property="CaretBrush"       Value="{StaticResource AccentBrush}"/>
-            <Setter Property="SelectionBrush"   Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Background"       Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="Foreground"       Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="CaretBrush"       Value="{DynamicResource AccentBrush}"/>
+            <Setter Property="SelectionBrush"   Value="{DynamicResource AccentBrush}"/>
             <Setter Property="BorderThickness"  Value="1"/>
-            <Setter Property="BorderBrush"      Value="{StaticResource AppBorderBrush}"/>
+            <Setter Property="BorderBrush"      Value="{DynamicResource AppBorderBrush}"/>
             <Setter Property="FontFamily"       Value="Segoe UI"/>
             <Setter Property="FontSize"         Value="13"/>
             <Setter Property="Height"           Value="34"/>
@@ -389,7 +375,7 @@
                                          Margin="10,0,0,0"
                                          IsHitTestVisible="False">
                                     <Path Data="M 6,1 A 5,5 0 1,1 5.999,1 Z M 9.5,9.5 L 14,14"
-                                          Stroke="{StaticResource TextSecondaryBrush}"
+                                          Stroke="{DynamicResource TextSecondaryBrush}"
                                           StrokeThickness="1.5"
                                           StrokeStartLineCap="Round"
                                           StrokeEndLineCap="Round"
@@ -399,7 +385,7 @@
                                 <!-- Placeholder и текст на одинаковом отступе от лупы -->
                                 <TextBlock x:Name="Placeholder"
                                            Text="{TemplateBinding Tag}"
-                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"
                                            FontFamily="Segoe UI" FontSize="13"
                                            VerticalAlignment="Center"
                                            Margin="34,0,10,0"
@@ -417,7 +403,7 @@
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter TargetName="Bd" Property="BorderBrush"
-                                        Value="{StaticResource AccentBrush}"/>
+                                        Value="{DynamicResource AccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -447,7 +433,7 @@
                                         <RepeatButton.Template>
                                             <ControlTemplate TargetType="RepeatButton">
                                                 <Border Height="3" VerticalAlignment="Center"
-                                                        Background="{StaticResource AccentBrush}"
+                                                        Background="{DynamicResource AccentBrush}"
                                                         CornerRadius="1.5 0 0 1.5"/>
                                             </ControlTemplate>
                                         </RepeatButton.Template>
@@ -460,19 +446,19 @@
                                             <ControlTemplate TargetType="Thumb">
                                                 <Ellipse x:Name="ThumbEllipse"
                                                          Width="13" Height="13"
-                                                         Fill="{StaticResource SurfaceBrush}"
-                                                         Stroke="{StaticResource AppBorderBrush}"
+                                                         Fill="{DynamicResource SurfaceBrush}"
+                                                         Stroke="{DynamicResource AppBorderBrush}"
                                                          StrokeThickness="1.5"/>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="ThumbEllipse"
                                                                 Property="Stroke"
-                                                                Value="{StaticResource AccentBrush}"/>
+                                                                Value="{DynamicResource AccentBrush}"/>
                                                     </Trigger>
                                                     <Trigger Property="IsDragging" Value="True">
                                                         <Setter TargetName="ThumbEllipse"
                                                                 Property="Fill"
-                                                                Value="{StaticResource AccentBrush}"/>
+                                                                Value="{DynamicResource AccentBrush}"/>
                                                         <Setter TargetName="ThumbEllipse"
                                                                 Property="Stroke"
                                                                 Value="Transparent"/>
@@ -489,7 +475,7 @@
                                         <RepeatButton.Template>
                                             <ControlTemplate TargetType="RepeatButton">
                                                 <Border Height="3" VerticalAlignment="Center"
-                                                        Background="{StaticResource DividerBrush}"
+                                                        Background="{DynamicResource DividerBrush}"
                                                         CornerRadius="0 1.5 1.5 0"/>
                                             </ControlTemplate>
                                         </RepeatButton.Template>
@@ -509,8 +495,8 @@
         <Style x:Key="ThemeButtonStyle" TargetType="Button">
             <Setter Property="Width"           Value="90"/>
             <Setter Property="Height"          Value="32"/>
-            <Setter Property="Background"      Value="{StaticResource SurfaceBrush}"/>
-            <Setter Property="Foreground"      Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Background"      Value="{DynamicResource SurfaceBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource TextSecondaryBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -521,7 +507,7 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
-                                BorderBrush="{StaticResource AppBorderBrush}"
+                                BorderBrush="{DynamicResource AppBorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="3">
                             <ContentPresenter HorizontalAlignment="Center"
@@ -530,11 +516,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource HoverBrush}"/>
+                                        Value="{DynamicResource HoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -545,14 +531,14 @@
         <!-- Активная тема: акцентная рамка + основной текст -->
         <Style x:Key="ThemeButtonActiveStyle" TargetType="Button"
                BasedOn="{StaticResource ThemeButtonStyle}">
-            <Setter Property="Foreground"      Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="Foreground"      Value="{DynamicResource TextPrimaryBrush}"/>
             <Setter Property="BorderThickness" Value="1.5"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
-                                BorderBrush="{StaticResource AccentBrush}"
+                                BorderBrush="{DynamicResource AccentBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="3">
                             <ContentPresenter HorizontalAlignment="Center"
@@ -561,11 +547,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource HoverBrush}"/>
+                                        Value="{DynamicResource HoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -579,7 +565,7 @@
         <Style x:Key="HotkeyInputStyle" TargetType="Button">
             <Setter Property="Width"           Value="130"/>
             <Setter Property="Height"          Value="26"/>
-            <Setter Property="Background"      Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="Background"      Value="{DynamicResource SurfaceBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor"          Value="Hand"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -588,7 +574,7 @@
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Bd"
                                 Background="{TemplateBinding Background}"
-                                BorderBrush="{StaticResource AppBorderBrush}"
+                                BorderBrush="{DynamicResource AppBorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="3">
                             <ContentPresenter HorizontalAlignment="Center"
@@ -596,15 +582,16 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#303030"/>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource SurfaceHoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource PressedBrush}"/>
+                                        Value="{DynamicResource PressedBrush}"/>
                             </Trigger>
                             <Trigger Property="Tag" Value="capturing">
                                 <Setter TargetName="Bd" Property="BorderBrush"
-                                        Value="{StaticResource AccentBrush}"/>
+                                        Value="{DynamicResource AccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -622,14 +609,16 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Border x:Name="Bd" Background="#3C3C3C" CornerRadius="3"/>
+                        <Border x:Name="Bd" Background="{DynamicResource ScrollThumbBrush}"
+                                CornerRadius="3"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#525252"/>
+                                <Setter TargetName="Bd" Property="Background"
+                                        Value="{DynamicResource ScrollThumbHoverBrush}"/>
                             </Trigger>
                             <Trigger Property="IsDragging" Value="True">
                                 <Setter TargetName="Bd" Property="Background"
-                                        Value="{StaticResource AccentBrush}"/>
+                                        Value="{DynamicResource AccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -700,5 +689,6 @@
             </Style.Triggers>
         </Style>
 
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
