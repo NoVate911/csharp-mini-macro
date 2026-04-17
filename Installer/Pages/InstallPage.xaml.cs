@@ -25,21 +25,43 @@ namespace MiniMacroInstaller.Pages
                 await Task.Run(() =>
                 {
                     // 1. Проверить и установить runtime
-                    SetProgress(10, "Проверка зависимостей...");
+                    SetProgress(5, "Проверка зависимостей...");
 
-                    if (isModern && !RuntimeHelper.IsNet10Installed())
+                    if (isModern)
                     {
-                        SetProgress(20, "Установка .NET Desktop Runtime 10...");
-                        RuntimeHelper.InstallNet10(msg => AppendLog(msg));
-                    }
-                    else if (!isModern && !RuntimeHelper.IsNetFx48Installed())
-                    {
-                        SetProgress(20, "Установка .NET Framework 4.8...");
-                        RuntimeHelper.InstallNetFx48(msg => AppendLog(msg));
+                        // Modern: нужны оба рантайма — x64 и x86
+                        if (!RuntimeHelper.IsNet10x64Installed())
+                        {
+                            SetProgress(15, "Установка .NET Desktop Runtime 10.0 (x64)...");
+                            RuntimeHelper.InstallNet10x64(msg => AppendLog(msg));
+                        }
+                        else
+                        {
+                            AppendLog("✓ .NET Desktop Runtime 10.0 (x64) уже установлен.");
+                        }
+
+                        if (!RuntimeHelper.IsNet10x86Installed())
+                        {
+                            SetProgress(30, "Установка .NET Desktop Runtime 10.0 (x86)...");
+                            RuntimeHelper.InstallNet10x86(msg => AppendLog(msg));
+                        }
+                        else
+                        {
+                            AppendLog("✓ .NET Desktop Runtime 10.0 (x86) уже установлен.");
+                        }
                     }
                     else
                     {
-                        AppendLog("✓ Зависимости уже установлены.");
+                        // Legacy: нужен .NET Framework 4.8
+                        if (!RuntimeHelper.IsNetFx48Installed())
+                        {
+                            SetProgress(20, "Установка .NET Framework 4.8...");
+                            RuntimeHelper.InstallNetFx48(msg => AppendLog(msg));
+                        }
+                        else
+                        {
+                            AppendLog("✓ .NET Framework 4.8 уже установлен.");
+                        }
                     }
 
                     // 2. Установить файлы
@@ -47,10 +69,7 @@ namespace MiniMacroInstaller.Pages
                     InstallHelper.Install(
                         installDir, isModern,
                         desktopShortcut, startMenuShortcut,
-                        msg =>
-                        {
-                            AppendLog(msg);
-                        });
+                        msg => AppendLog(msg));
 
                     SetProgress(100, "Установка завершена");
                 });

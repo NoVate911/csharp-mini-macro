@@ -1,13 +1,21 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using Microsoft.Win32;
 
 namespace MiniMacroInstaller.Helpers
 {
     internal static class RuntimeHelper
     {
+        // Папка с локальными установщиками рантаймов (рядом с Setup.exe)
+        private static string RuntimesFolder =>
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "runtimes");
+
+        // Ожидаемые имена файлов
+        private const string NetFx48File    = "ndp48.exe";
+        private const string Net10x64File   = "dotnet10-x64.exe";
+        private const string Net10x86File   = "dotnet10-x86.exe";
+
         // ─── .NET Framework 4.8 ────────────────────────────────────────────────
 
         // Release-код >= 528040 означает .NET FX 4.8
@@ -20,86 +28,109 @@ namespace MiniMacroInstaller.Helpers
             return release.HasValue && release.Value >= 528040;
         }
 
-        // Загружает и запускает веб-установщик .NET FX 4.8
         internal static void InstallNetFx48(Action<string> log)
         {
-            const string url = "https://go.microsoft.com/fwlink/?LinkId=2085155";
-            var tempPath = Path.Combine(Path.GetTempPath(), "ndp48-web.exe");
+            var localFile = Path.Combine(RuntimesFolder, NetFx48File);
 
-            log("Загрузка .NET Framework 4.8...");
-            using var client = new WebClient();
-            client.DownloadFile(url, tempPath);
-
-            log("Запуск установщика .NET Framework 4.8...");
-            var process = Process.Start(new ProcessStartInfo
+            if (File.Exists(localFile))
             {
-                FileName = tempPath,
-                Arguments = "/quiet /norestart",
-                UseShellExecute = true,
-                Verb = "runas"
-            });
-            process?.WaitForExit();
-            log("Установка .NET Framework 4.8 завершена.");
+                log("Запуск локального установщика .NET Framework 4.8...");
+                RunInstaller(localFile, "/quiet /norestart", log);
+                log("✓ .NET Framework 4.8 установлен.");
+            }
+            else
+            {
+                log($"! Файл {NetFx48File} не найден в assets/runtimes/.");
+                log("  Поместите установщик .NET Framework 4.8 в папку assets/runtimes/ рядом с Setup.exe.");
+                throw new FileNotFoundException(
+                    $"Установщик .NET Framework 4.8 не найден: {localFile}");
+            }
         }
 
-        // ─── .NET Desktop Runtime 10.0 ─────────────────────────────────────────
+        // ─── .NET Desktop Runtime 10.0 (x64) ──────────────────────────────────
 
-        internal static bool IsNet10Installed()
+        internal static bool IsNet10x64Installed()
         {
-            // Проверяем наличие папки с версией 10.x в стандартном расположении
             var basePath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
                 "dotnet", "shared", "Microsoft.WindowsDesktop.App");
+            return ContainsVersion10(basePath);
+        }
 
+        internal static void InstallNet10x64(Action<string> log)
+        {
+            var localFile = Path.Combine(RuntimesFolder, Net10x64File);
+
+            if (File.Exists(localFile))
+            {
+                log("Запуск локального установщика .NET Desktop Runtime 10.0 (x64)...");
+                RunInstaller(localFile, "/install /quiet /norestart", log);
+                log("✓ .NET Desktop Runtime 10.0 (x64) установлен.");
+            }
+            else
+            {
+                log($"! Файл {Net10x64File} не найден в assets/runtimes/.");
+                log("  Поместите установщик .NET Desktop Runtime 10.0 x64 в папку assets/runtimes/ рядом с Setup.exe.");
+                throw new FileNotFoundException(
+                    $"Установщик .NET Desktop Runtime 10.0 x64 не найден: {localFile}");
+            }
+        }
+
+        // ─── .NET Desktop Runtime 10.0 (x86) ──────────────────────────────────
+
+        internal static bool IsNet10x86Installed()
+        {
+            // x86-рантаймы живут в Program Files (x86)
+            var pf86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var basePath = Path.Combine(pf86, "dotnet", "shared", "Microsoft.WindowsDesktop.App");
+            return ContainsVersion10(basePath);
+        }
+
+        internal static void InstallNet10x86(Action<string> log)
+        {
+            var localFile = Path.Combine(RuntimesFolder, Net10x86File);
+
+            if (File.Exists(localFile))
+            {
+                log("Запуск локального установщика .NET Desktop Runtime 10.0 (x86)...");
+                RunInstaller(localFile, "/install /quiet /norestart", log);
+                log("✓ .NET Desktop Runtime 10.0 (x86) установлен.");
+            }
+            else
+            {
+                log($"! Файл {Net10x86File} не найден в assets/runtimes/.");
+                log("  Поместите установщик .NET Desktop Runtime 10.0 x86 в папку assets/runtimes/ рядом с Setup.exe.");
+                throw new FileNotFoundException(
+                    $"Установщик .NET Desktop Runtime 10.0 x86 не найден: {localFile}");
+            }
+        }
+
+        // ─── Вспомогательные методы ────────────────────────────────────────────
+
+        private static bool ContainsVersion10(string basePath)
+        {
             if (!Directory.Exists(basePath)) return false;
             foreach (var dir in Directory.GetDirectories(basePath))
             {
-                var name = Path.GetFileName(dir);
-                if (name.StartsWith("10.", StringComparison.Ordinal)) return true;
+                if (Path.GetFileName(dir).StartsWith("10.", StringComparison.Ordinal))
+                    return true;
             }
             return false;
         }
 
-        // Устанавливает .NET 10.0 Desktop Runtime через winget или открывает страницу загрузки
-        internal static void InstallNet10(Action<string> log)
+        private static void RunInstaller(string filePath, string arguments, Action<string> log)
         {
-            log("Попытка установки через winget...");
-            try
+            var process = Process.Start(new ProcessStartInfo
             {
-                var winget = Process.Start(new ProcessStartInfo
-                {
-                    FileName = "winget",
-                    Arguments = "install --id Microsoft.DotNet.DesktopRuntime.10 --silent --accept-package-agreements --accept-source-agreements",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                });
-
-                if (winget != null)
-                {
-                    var output = winget.StandardOutput.ReadToEnd();
-                    winget.WaitForExit();
-
-                    if (winget.ExitCode == 0)
-                    {
-                        log("✓ .NET Desktop Runtime 10 установлен через winget.");
-                        return;
-                    }
-                    log($"winget завершился с кодом {winget.ExitCode}. Открываем страницу загрузки...");
-                }
-            }
-            catch
-            {
-                log("winget недоступен. Открываем страницу загрузки...");
-            }
-
-            // Резервный вариант: открыть страницу загрузки
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "https://dotnet.microsoft.com/en-us/download/dotnet/10.0",
-                UseShellExecute = true
+                FileName        = filePath,
+                Arguments       = arguments,
+                UseShellExecute = true,
+                Verb            = "runas"
             });
-            log("Загрузите и установите '.NET Desktop Runtime 10.x', затем перезапустите установщик.");
+            process?.WaitForExit();
+
+            if (process?.ExitCode != 0 && process?.ExitCode != 3010)
+                log($"  ! Установщик завершился с кодом {process?.ExitCode} (3010 = требуется перезагрузка).");
         }
     }
 }
