@@ -13,7 +13,7 @@
     <Company>NoVate Source</Company>
     <Product>Mini Macro</Product>
     <Description>Лёгкая программа для записи и воспроизведения макросов клавиатуры и мыши.</Description>
-    <Version>0.4.0</Version>
+    <Version>0.4.1</Version>
     <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
 
