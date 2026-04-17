@@ -228,15 +228,6 @@ namespace MiniMacro
         private void Settings_Click(object sender, RoutedEventArgs e) =>
             new SettingsWindow().Show();
 
-        private void GitHub_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName        = "https://github.com/NoVate911/csharp-mini-macro",
-                UseShellExecute = true
-            });
-        }
-
         // ── Слайдеры в сайдбаре ──────────────────────────────────────────────
 
         private void SideRepeat_ValueChanged(object sender,
